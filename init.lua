@@ -244,6 +244,7 @@ vim.cmd('set t_Co=256')
 
 -- vim.g['airline#extensions#tmuxline#enabled'] = 0
 vim.g['airline#extensions#tabline#enabled'] = 1
+vim.g.rustfmt_autosave = 1
 vim.g.airline_statusline_ontop = 0
 vim.g.ruby_host_prog = 'rvm system do neovim-ruby-host'
 vim.g.termdebugger = "rust-gdb"
@@ -286,7 +287,6 @@ vim.opt.showcmd = true
 vim.opt.expandtab = true
 vim.opt.showmatch = true
 vim.opt.mouse = "a"
-vim.rustfmt_autosave = 1
 vim.opt.ttyfast = true
 vim.opt.splitbelow = true
 vim.opt.splitright = true
