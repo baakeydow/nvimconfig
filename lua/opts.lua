@@ -1,6 +1,5 @@
 local M = {}
 
-
 M.treesitter = {
     indent = {
         enable = true
@@ -54,6 +53,7 @@ M.mason = {
         "goimports",
         "gopls",
         "revive",
+        "js-debug-adapter",
         "lua-language-server",
         "stylua",
         "css-lsp",

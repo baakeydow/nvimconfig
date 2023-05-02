@@ -59,7 +59,7 @@ local plugins = {
     {'nvim-lua/plenary.nvim'}, -- " All the lua functions I don't want to write twice.
     {"nvim-treesitter/nvim-treesitter", opts = opts.treesitter}, -- The goal of nvim-treesitter is both to provide a simple and easy way to use the interface for tree-sitter in Neovim and to provide some basic functionality
     {'rust-lang/rust.vim'}, -- This is a Vim plugin that provides Rust file detection, syntax highlighting, formatting, Syntastic integration, and more. It requires Vim 8 or higher for full functionality. Some things may not work on earlier versions.
-    {'simrat39/rust-tools.nvim'}, -- A plugin to improve your rust experience in neovim.
+    {'simrat39/rust-tools.nvim'} -- A plugin to improve your rust experience in neovim.
 }
 
 return plugins
