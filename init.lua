@@ -111,7 +111,7 @@ vim.api.nvim_set_keymap("n", "<leader>h", ":History<CR>",
     {noremap = true, silent = true})
 
 -- Open recent commands
-vim.api.nvim_set_keymap("n", "<leader>H", ":History:<CR>",
+vim.api.nvim_set_keymap("n", "<leader><leader>", ":History:<CR>",
     {noremap = true, silent = true})
 
 -- Preview Project files
