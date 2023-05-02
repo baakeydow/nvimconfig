@@ -59,6 +59,7 @@ M.mason = {
         "css-lsp",
         "html-lsp",
         "typescript-language-server",
+        "node-debug2-adapter",
         "deno",
         "typescript",
         "javascript",

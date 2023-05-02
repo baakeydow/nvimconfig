@@ -89,12 +89,6 @@ local dap, dapui = require("dap"), require("dapui")
 
 dap.set_log_level('TRACE')
 
-dap.adapters.rust = {
-    type = 'executable',
-    command = '/opt/homebrew/Cellar/llvm/16.0.2/bin/lldb-vscode',
-    name = 'lldb'
-}
-
 dap.configurations.rust = {
     {
         type = 'rust',
@@ -112,6 +106,23 @@ dap.configurations.rust = {
     }
 }
 
+dap.adapters.rust = {
+    type = 'executable',
+    command = '/opt/homebrew/Cellar/llvm/16.0.2/bin/lldb-vscode',
+    name = 'lldb'
+}
+
+dap.adapters['pwa-node'] = {type = 'server', host = '127.0.0.1', port = 45635}
+
+dap.adapters.node2 = {
+    type = 'executable',
+    command = 'node-debug2-adapter',
+    args = {
+        vim.fn.stdpath("data") ..
+            '/mason/packages/node-debug2-adapter/out/src/nodeDebug.js'
+    }
+}
+
 dap.listeners.after.event_initialized["dapui_config"] = function()
     dapui.open()
 end
@@ -125,8 +136,6 @@ dap.listeners.before.event_exited["dapui_config"] = function()
 end
 
 local DEBUGGER_PATH = vim.fn.stdpath "data" .. "/lazy/vscode-js-debug"
-
-dap.adapters['pwa-node'] = {type = 'server', host = '127.0.0.1', port = 45635}
 
 require("dap-vscode-js").setup {
     node_path = "node",
@@ -144,11 +153,32 @@ require("dap-vscode-js").setup {
 for _, language in ipairs {"typescript", "javascript"} do
     require("dap").configurations[language] = {
         {
+            type = 'node2',
+            name = 'Launch node2',
+            request = 'launch',
+            program = '${file}',
+            cwd = vim.fn.getcwd(),
+            sourceMaps = true,
+            protocol = 'inspector',
+            console = 'integratedTerminal',
+            outFiles = {"${workspaceFolder}/**/*.js"}
+        },
+        {
+            type = 'node2',
+            name = 'Attach node2',
+            request = 'attach',
+            program = '${file}',
+            cwd = vim.fn.getcwd(),
+            sourceMaps = true,
+            protocol = 'inspector',
+            console = 'integratedTerminal'
+        },
+        {
             type = "pwa-node",
             request = "launch",
             name = "Launch file",
             program = "${file}",
-            protocol = 'inspector';
+            protocol = 'inspector',
             sourceMaps = true,
             cwd = "${workspaceFolder}"
         },
