@@ -29,7 +29,7 @@ require('rust-tools').setup({
                     importEnforceGranularity = true,
                     importPrefix = "crate"
                 },
-                cargo = {allFeatures = true},
+                cargo = {features = 'all'},
                 checkOnSave = {
                     -- default: `cargo check`
                     command = "clippy"
@@ -118,6 +118,20 @@ dap.configurations.rust = {
         type = 'rust',
         request = 'launch',
         name = 'Launch',
+        program = function()
+            return vim.fn.input('Path to executable: ',
+                vim.fn.getcwd() .. '/target/debug/', 'file')
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+        showDisassembly = "never",
+        sourceMaps = false,
+        args = {"-d -l=debug --nocapture"}
+    },
+    {
+        type = 'rust',
+        request = 'attach',
+        name = 'Attach',
         program = function()
             return vim.fn.input('Path to executable: ',
                 vim.fn.getcwd() .. '/target/debug/', 'file')
