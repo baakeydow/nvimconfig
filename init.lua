@@ -177,6 +177,18 @@ vim.cmd([[
 vim.api.nvim_set_keymap("n", "ldb", ":DapToggleBreakpoint<CR>",
     {noremap = true, silent = true})
 
+-- Step into
+vim.api.nvim_set_keymap("n", "ldi", ":DapStepInto<CR>",
+    {noremap = true, silent = true})
+--
+-- Step out
+vim.api.nvim_set_keymap("n", "ldu", ":DapStepOut<CR>",
+    {noremap = true, silent = true})
+
+-- Step over
+vim.api.nvim_set_keymap("n", "ldo", ":DapStepOver<CR>",
+    {noremap = true, silent = true})
+
 -- Start debugging
 vim.api.nvim_set_keymap("n", "ldc", ":DapContinue<CR>",
     {noremap = true, silent = true})
