@@ -82,29 +82,29 @@ require'lspconfig'.tsserver.setup {}
 -- DAP Config
 
 require('dap-go').setup {
-  -- Additional dap configurations can be added.
-  -- dap_configurations accepts a list of tables where each entry
-  -- represents a dap configuration. For more details do:
-  -- :help dap-configuration
-  dap_configurations = {
-    {
-      -- Must be "go" or it will be ignored by the plugin
-      type = "go",
-      name = "Attach remote (dap-go)",
-      mode = "remote",
-      request = "attach",
+    -- Additional dap configurations can be added.
+    -- dap_configurations accepts a list of tables where each entry
+    -- represents a dap configuration. For more details do:
+    -- :help dap-configuration
+    dap_configurations = {
+        {
+            -- Must be "go" or it will be ignored by the plugin
+            type = "go",
+            name = "Attach remote (dap-go)",
+            mode = "remote",
+            request = "attach"
+        }
     },
-  },
-  -- delve configurations
-  delve = {
-    -- time to wait for delve to initialize the debug session.
-    -- default to 20 seconds
-    initialize_timeout_sec = 20,
-    -- a string that defines the port to start delve debugger.
-    -- default to string "${port}" which instructs nvim-dap
-    -- to start the process in a random available port
-    port = "${port}"
-  },
+    -- delve configurations
+    delve = {
+        -- time to wait for delve to initialize the debug session.
+        -- default to 20 seconds
+        initialize_timeout_sec = 20,
+        -- a string that defines the port to start delve debugger.
+        -- default to string "${port}" which instructs nvim-dap
+        -- to start the process in a random available port
+        port = "${port}"
+    }
 }
 require("dapui").setup()
 require("neodev").setup({library = {plugins = {"nvim-dap-ui"}, types = true}})
@@ -161,6 +161,15 @@ dap.adapters.node2 = {
     }
 }
 
+dap.adapters.chrome = {
+    type = "executable",
+    command = "node",
+    args = {
+        vim.fn.stdpath("data") ..
+            "/mason/packages/chrome-debug-adapter/out/src/chromeDebug.js"
+    }
+}
+
 dap.listeners.after.event_initialized["dapui_config"] = function()
     dapui.open()
 end
@@ -188,46 +197,104 @@ require("dap-vscode-js").setup {
     } -- which adapters to register in nvim-dap
 }
 
-for _, language in ipairs {"typescript", "javascript"} do
+for _, language in ipairs {
+    "typescript",
+    "javascript",
+    "typescriptreact",
+    "javascriptreact",
+    "vue"
+} do
     require("dap").configurations[language] = {
-        {
+        { -- launch node 2
             type = 'node2',
-            name = 'Launch node2',
+            name = 'node2 Launch',
             request = 'launch',
             program = '${file}',
             cwd = vim.fn.getcwd(),
             sourceMaps = true,
             protocol = 'inspector',
             console = 'integratedTerminal',
-            outFiles = {"${workspaceFolder}/**/*.js"}
+            outFiles = {"${workspaceFolder}/**/*.js"},
+            resolveSourceMapLocations = {
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            }
         },
-        {
+        { -- attach node 2
             type = 'node2',
-            name = 'Attach node2',
+            name = 'node2 Attach',
             request = 'attach',
             program = '${file}',
             cwd = vim.fn.getcwd(),
             sourceMaps = true,
             protocol = 'inspector',
-            console = 'integratedTerminal'
+            console = 'integratedTerminal',
+            resolveSourceMapLocations = {
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            }
         },
-        {
+
+        --
+
+        { -- launch chrome 3000
+            type = "pwa-chrome",
+            name = "pwa-chrome Launch 3000",
+            request = "launch",
+            sourceMaps = true,
+            trace = true,
+            url = "http://localhost:3000",
+            resolveSourceMapLocations = {
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            }
+        },
+        { -- attach pwa-chrome 3000
+            type = "pwa-chrome",
+            name = "pwa-chrome Attach 3000",
+            request = "attach",
+            program = "${file}",
+            cwd = vim.fn.getcwd(),
+            protocol = "inspector",
+            sourceMaps = true,
+            trace = true,
+            port = 9222,
+            url = "http://localhost:3000",
+            webRoot = "${workspaceFolder}",
+            resolveSourceMapLocations = {
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            }
+        },
+        { -- select pid
+            type = "pwa-node",
+            request = "attach",
+            name = "pwa-node Attach Program (select pid)",
+            cwd = vim.fn.getcwd(),
+            processId = require("dap.utils").pick_process,
+            skipFiles = {"<node_internals>/**"}
+        },
+        { -- launch pwa-node
             type = "pwa-node",
             request = "launch",
-            name = "Launch file",
+            name = "pwa-node Launch file",
             program = "${file}",
             protocol = 'inspector',
             sourceMaps = true,
-            cwd = "${workspaceFolder}"
+            cwd = "${workspaceFolder}",
+            resolveSourceMapLocations = {
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            }
         },
-        {
+        { -- attach pwa-node
             type = "pwa-node",
             request = "attach",
-            name = "Attach",
+            name = "pwa-node Attach",
             processId = require("dap.utils").pick_process,
             cwd = "${workspaceFolder}"
         },
-        {
+        { -- jest
             type = "pwa-node",
             request = "launch",
             name = "Debug Jest Tests",
@@ -239,47 +306,71 @@ for _, language in ipairs {"typescript", "javascript"} do
             console = "integratedTerminal",
             internalConsoleOptions = "neverOpen"
         },
-        {
+        { -- launc Nextjs
+            type = "node-terminal",
+            name = "Next.js launch: debug server-side",
+            request = "launch",
+            command = "pnpm dev"
+        },
+        { -- Nextjs
+            type = "chrome",
+            name = "Next.js launch: debug client-side",
+            request = "launch",
+            command = "pnpm dev",
+            url = "http://localhost:3000",
+            autoAttachChildProcesses = true,
+            webRoot = "${workspaceFolder}",
+            sourceMaps = true,
+            resolveSourceMapLocations = {
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            }
+        },
+        { -- Nextjs
+            -- type = "pwa-chrome",
+            type = "chrome",
+            -- type = "node-terminal",
+            name = "Next.js launch: debug full stack",
+            cwd = "${workspaceFolder}/src/app",
+            autoAttachChildProcesses = true,
+            request = "launch",
+            command = "pnpm dev",
+            -- program = "${file}",
+            -- webRoot = "${workspaceFolder}",
+            sourceMaps = true,
+            -- protocol = "inspector",
+            -- skipFiles = {'<node_internals>/**'},
+            -- console = 'integratedTerminal',
+            resolveSourceMapLocations = {
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+            },
+            serverReadyAction = {
+                pattern = "started server on .+, url: (https?://.+)",
+                uriFormat = "%s",
+                action = "debugWithChrome"
+            },
+            url = "http://localhost:3000"
+        },
+        { -- Deno
+            type = 'pwa-node',
             request = 'launch',
             name = 'Deno launch',
-            type = 'pwa-node',
             program = '${file}',
             cwd = '${workspaceFolder}',
             runtimeExecutable = vim.fn.getenv('HOME') .. '/.deno/bin/deno',
             runtimeArgs = {'run', '--inspect-brk'},
             attachSimplePort = 9229
         },
-        {
+        { -- Deno
+            type = 'pwa-node',
             request = 'launch',
             name = 'Deno test launch',
-            type = 'pwa-node',
             program = '${file}',
             cwd = '${workspaceFolder}',
             runtimeExecutable = vim.fn.getenv('HOME') .. '/.deno/bin/deno',
             runtimeArgs = {'test', '--inspect-brk'},
             attachSimplePort = 9229
-        }
-    }
-end
-
-for _, language in ipairs {"typescriptreact", "javascriptreact"} do
-    require("dap").configurations[language] = {
-        {
-            type = "pwa-chrome",
-            name = "Attach - Remote Debugging",
-            request = "attach",
-            program = "${file}",
-            cwd = vim.fn.getcwd(),
-            sourceMaps = true,
-            protocol = "inspector",
-            port = 9222,
-            webRoot = "${workspaceFolder}"
-        },
-        {
-            type = "pwa-chrome",
-            name = "Launch Chrome",
-            request = "launch",
-            url = "http://localhost:3000"
         }
     }
 end
