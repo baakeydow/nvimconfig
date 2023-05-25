@@ -307,13 +307,14 @@ for _, language in ipairs {
             internalConsoleOptions = "neverOpen"
         },
         { -- launc Nextjs
-            type = "node-terminal",
+            type = "pwa-node",
             name = "Next.js launch: debug server-side",
             request = "launch",
             command = "pnpm dev"
         },
         { -- Nextjs
-            type = "chrome",
+            type = "pwa-chrome",
+            -- type = "chrome",
             name = "Next.js launch: debug client-side",
             request = "launch",
             command = "pnpm dev",
@@ -327,8 +328,8 @@ for _, language in ipairs {
             }
         },
         { -- Nextjs
-            -- type = "pwa-chrome",
-            type = "chrome",
+            type = "pwa-chrome",
+            -- type = "chrome",
             -- type = "node-terminal",
             name = "Next.js launch: debug full stack",
             cwd = "${workspaceFolder}/src/app",
