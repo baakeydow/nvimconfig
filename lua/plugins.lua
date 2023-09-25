@@ -1,14 +1,15 @@
 local opts = require("opts")
 
 local plugins = {
-    {'github/copilot.vim'}, -- GitHub Copilot uses OpenAI Codex to suggest code and entire functions in real-time right from your editor. 
+    {'github/copilot.vim'}, -- GitHub Copilot uses OpenAI Codex to suggest code and entire functions in real-time right from your editor.
     {'preservim/nerdtree'}, -- The NERDTree is a file system explorer for the Vim editor.
     {'preservim/nerdcommenter'}, -- Comment functions so powerful—no comment necessary.
     {'ryanoasis/vim-devicons'}, -- Supports plugins such as NERDTree, vim-airline, CtrlP, powerline, denite, unite, lightline.vim, vim-startify, vimfiler, vim-buffet and flagship.
     {'nvim-tree/nvim-web-devicons'}, -- A lua fork of vim-devicons. This plugin provides the same icons as well as colors for each icon.
     {'Xuyuanp/nerdtree-git-plugin'}, -- A plugin of NERDTree showing git status flags.
     {'unkiwii/vim-nerdtree-sync'}, -- A plugin that show the current file on NERDtree
-    {'j-hui/fidget.nvim'}, -- Standalone UI for nvim-lsp progress. Eye candy for the impatient.
+    {'j-hui/fidget.nvim', tag = 'legacy'}, -- Standalone UI for nvim-lsp progress. Eye candy for the impatient.
+    {'norcalli/nvim-colorizer.lua'}, -- A high-performance color highlighter for Neovim which has no external dependencies! Written in performant Luajit.
     {'folke/trouble.nvim'}, -- A pretty list for showing diagnostics, references, telescope results, quickfix and location lists to help you solve all the trouble your code is causing.
     {'hrsh7th/nvim-cmp'}, -- A completion engine plugin for neovim written in Lua. Completion sources are installed from external repositories and "sourced".
     {'hrsh7th/cmp-buffer'}, -- nvim-cmp source for buffer words.
@@ -43,7 +44,8 @@ local plugins = {
     {'fatih/vim-go'}, -- This plugin adds Go language support for Vim
     {"catppuccin/nvim", name = "catppuccin"}, -- This port of Catppuccin is special because it was the first one and the one that originated the project itself.
     {'mg979/vim-visual-multi', branch = 'master'}, -- It's called vim-visual-multi in analogy with visual-block, but the plugin works mostly from normal mode.
-    {'vim-airline/vim-airline'}, -- Lean & mean status/tabline for vim that's light as air.
+    {'gpanders/editorconfig.nvim'}, -- Add support for .editorconfig file
+    {'vim-airline/vim-airline', lazy = false}, -- Lean & mean status/tabline for vim that's light as air.
     {'vim-airline/vim-airline-themes'}, -- This is the official theme repository for vim-airline
     {
         'yuki-yano/fzf-preview.vim',
@@ -52,10 +54,12 @@ local plugins = {
     }, -- fzf-preview is a (Neo)vim plugin and coc extension written in TypeScript that provide powerful integration with fzf.
     {'drewtempelmeyer/palenight.vim'}, -- A dark color scheme for Vim/Neovim based off the Material Pale Night color scheme. Much of the work is based on the lovely onedark.vim color scheme.
     {'folke/tokyonight.nvim', branch = 'main'}, -- A dark and light Neovim theme written in Lua ported from the Visual Studio Code TokyoNight theme. Includes extra themes for Kitty, Alacritty, iTerm and Fish.
+    { "ellisonleao/gruvbox.nvim", priority = 1000 }, -- Gruvbox Material
     {'junegunn/fzf', build = ':call fzf#install()'}, -- fzf is a general-purpose command-line fuzzy finder.
     {'junegunn/fzf.vim'}, -- Things you can do with fzf and Vim.
     {'airblade/vim-gitgutter'}, -- " Show git diff of lines edited
     {'tpope/vim-fugitive'}, -- " :Git
+    {'tpope/vim-surround'}, -- Surround.vim is all about "surroundings": parentheses, brackets, quotes, XML tags, and more.
     {'nvim-lua/plenary.nvim'}, -- " All the lua functions I don't want to write twice.
     {"nvim-treesitter/nvim-treesitter", opts = opts.treesitter}, -- The goal of nvim-treesitter is both to provide a simple and easy way to use the interface for tree-sitter in Neovim and to provide some basic functionality
     {'rust-lang/rust.vim'}, -- This is a Vim plugin that provides Rust file detection, syntax highlighting, formatting, Syntastic integration, and more. It requires Vim 8 or higher for full functionality. Some things may not work on earlier versions.

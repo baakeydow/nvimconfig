@@ -1,4 +1,25 @@
 vim.g.mapleader = ' '
+vim.g.VM_default_mappings = 0
+vim.g.airline_powerline_fonts = 1
+vim.g.airline_statusline_ontop = 0
+vim.g["airline_theme"] = 'ayu_dark'
+vim.g["airline#extensions#tmuxline#enabled"] = 0
+vim.g["airline#extensions#tabline#enabled"] = 1
+vim.g["airline#extensions#tabline#show_tabs"] = 1
+--vim.g["airline#extensions#tabline#left_sep"] = " "
+--vim.g["airline#extensions#tabline#left_alt_sep"] = "|"
+vim.g["airline#extensions#tabline#formatter"] = "unique_tail"
+vim.g.rustfmt_autosave = 1
+vim.g.ruby_host_prog = 'rvm system do neovim-ruby-host'
+vim.g.termdebugger = "rust-gdb"
+vim.g.NERDTreeShowHidden = 1
+vim.g.NERDTreeQuitOnOpen = 0
+vim.g.webdevicons_enable = 1
+vim.g.webdevicons_enable_nerdtree = 1
+vim.g.nerdtree_sync_cursorline = 1
+vim.g.code_action_menu_window_border = 'single'
+vim.g.webdevicons_enable = 1
+vim.g.webdevicons_enable_nerdtree = 1
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -15,12 +36,16 @@ vim.opt.rtp:prepend(lazypath)
 
 local plugins = require("plugins")
 require("lazy").setup(plugins)
-
 require("mason").setup()
 require("mason-lspconfig").setup()
 require("mason-nvim-dap").setup()
 require("fidget").setup()
-require('hlargs').setup()
+require("hlargs").setup()
+require("nvim-lightbulb").setup({
+  autocmd = { enabled = true }
+})
+vim.cmd('set termguicolors')
+require('colorizer').setup()
 
 -- Easier movement between split windows CTRL + {h, j, k, l}
 vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', {})
@@ -42,16 +67,29 @@ autocmd("FileType", {
     end
 })
 
+--[[autocmd('BufWritePre', {]]
+  --[[pattern = { '*.tsx', '*.ts', '*.jsx', '*.js' },]]
+  --[[command = 'silent! EslintFixAll',]]
+  --[[group = vim.api.nvim_create_augroup('MyAutocmdsJavaScripFormatting', {}),]]
+--[[})]]
+
+--vim.api.nvim_exec([[
+  --:call airline#extensions#tabline#enable()
+--]], false)
+
+vim.cmd([[
+  augroup MyAutocmdsJavaScripFormatting
+    autocmd!
+    autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js silent! EslintFixAll
+  augroup END
+]])
+
 vim.api.nvim_exec([[
   highlight CopilotSuggestion guifg=#555555 ctermfg=8
 ]], false)
 
-vim.api.nvim_exec([[
-  :call airline#extensions#tabline#enable()
-]], false)
-
 -- Delete empty space from the end of lines on every save
-vim.cmd([[autocmd BufWritePre * :%s/\s\+$//e]])
+--vim.cmd([[autocmd BufWritePre * :%s/\s\+$//e]])
 
 -- Trigger `autoread` when files changes on disk
 vim.cmd(
@@ -67,6 +105,10 @@ vim.cmd([[
 vim.cmd([[
   autocmd BufEnter * TSBufEnable highlight
 ]])
+
+-- Format on save
+--vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]]
+--vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
 
 -- Restore zoom
 vim.cmd([[
@@ -198,6 +240,7 @@ vim.api.nvim_set_keymap("n", "ldk", ":DapTerminate<CR>",
     {noremap = true, silent = true})
 
 -- Configure LSP code navigation shortcuts
+vim.api.nvim_set_keymap("n", "lgg", "<cmd>LspRestart<CR>", {noremap = true, silent = true})
 vim.api.nvim_set_keymap("n", "lgd", "<cmd>lua vim.lsp.buf.definition()<CR>",
     {noremap = true, silent = true})
 vim.api.nvim_set_keymap("n", "lgk", "<cmd>lua vim.lsp.buf.signature_help()<CR>",
@@ -208,8 +251,9 @@ vim.api.nvim_set_keymap("n", "lgi", "<cmd>lua vim.lsp.buf.implementation()<CR>",
     {noremap = true, silent = true})
 vim.api.nvim_set_keymap("n", "lgc", "<cmd>lua vim.lsp.buf.incoming_calls()<CR>",
     {noremap = true, silent = true})
-vim.api.nvim_set_keymap("n", "lgt",
-    "<cmd>lua vim.lsp.buf.type_definition()<CR>",
+vim.api.nvim_set_keymap("n", "lgt", "<cmd>lua vim.lsp.buf.type_definition()<CR>",
+    {noremap = true, silent = true})
+vim.api.nvim_set_keymap("n", "lgf", "<cmd>lua vim.lsp.buf.code_action()<CR>",
     {noremap = true, silent = true})
 vim.api.nvim_set_keymap("n", "lgr", "<cmd>lua vim.lsp.buf.references()<CR>",
     {noremap = true, silent = true})
@@ -237,13 +281,16 @@ vim.api.nvim_set_keymap("n", "]s", "<cmd>lua vim.diagnostic.show()<CR>",
 vim.api.nvim_set_keymap("n", "<space>q", "<cmd>Trouble<CR>",
     {noremap = true, silent = true})
 
-vim.cmd.colorscheme "catppuccin-mocha" -- same as vim.cmd('colorscheme catppuccin-mocha')
+vim.cmd.colorscheme "gruvbox" -- same as vim.cmd('colorscheme catppuccin-mocha')
+--vim.cmd.colorscheme "catppuccin-mocha" -- same as vim.cmd('colorscheme catppuccin-mocha')
 
 -- Automatically reload files when they change on disk
 vim.cmd('set autoread')
 
 -- Height of the command-line window
 vim.cmd('set cmdheight=1')
+-- Always show tabs
+vim.cmd('set showtabline=2')
 
 -- Highlight on yank
 vim.cmd(
@@ -254,22 +301,6 @@ vim.cmd('set incsearch')
 
 vim.cmd('set t_Co=256')
 
--- vim.g['airline#extensions#tmuxline#enabled'] = 0
-vim.g['airline#extensions#tabline#enabled'] = 1
-vim.g.rustfmt_autosave = 1
-vim.g.airline_statusline_ontop = 0
-vim.g.ruby_host_prog = 'rvm system do neovim-ruby-host'
-vim.g.termdebugger = "rust-gdb"
-vim.g.NERDTreeShowHidden = 1
-vim.g.NERDTreeQuitOnOpen = 0
-vim.g.webdevicons_enable = 1
-vim.g.webdevicons_enable_nerdtree = 1
-vim.g.nerdtree_sync_cursorline = 1
-vim.g.airline_theme = 'ayu_dark'
-vim.g.code_action_menu_window_border = 'single'
-vim.g.webdevicons_enable = 1
-vim.g.webdevicons_enable_nerdtree = 1
-vim.g.airline_powerline_fonts = 1
 vim.opt.shortmess:append "sI"
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
@@ -318,3 +349,5 @@ vim.api.nvim_set_keymap("n", "<F2>", ":set invpaste paste?<CR>",
 vim.opt.pastetoggle = "<F2>"
 
 vim.opt.showmode = true
+
+

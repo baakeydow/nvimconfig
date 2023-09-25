@@ -13,6 +13,7 @@ M.treesitter = {
     ensure_installed = {
         "vim",
         "vimdoc",
+        "graphql",
         "lua",
         "http",
         "html",
@@ -66,7 +67,11 @@ M.mason = {
         "solang",
         "prettier",
         "clangd",
-        "clang-format"
+        "clang-format",
+        "prettier",
+        "graphql-lsp",
+        "kubernetes",
+        "eslint-lsp"
     }
 }
 

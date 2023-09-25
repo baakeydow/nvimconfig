@@ -78,6 +78,9 @@ require('lspconfig').gopls.setup {
 
 require'lspconfig'.solang.setup {}
 require'lspconfig'.tsserver.setup {}
+require'lspconfig'.eslint.setup{}
+require'lspconfig'.graphql.setup{}
+require'lspconfig'.dockerls.setup{}
 
 -- DAP Config
 
@@ -205,6 +208,26 @@ for _, language in ipairs {
     "vue"
 } do
     require("dap").configurations[language] = {
+        { -- working conf for nest
+            type = 'node2',
+            request = 'launch',
+            name = '(working) Debug Nest Framework',
+            args = {"${workspaceFolder}/packages/tpa-core-api/src/main.ts"},
+            envFile = "${workspaceFolder}/packages/tpa-core-api/.env",
+            runtimeExecutable = "yarn",
+            runtimeArgs = {
+              "run",
+              "start:debug",
+              "--",
+              "--inspect-brk"
+            },
+            port = 9229,    
+            autoAttachChildProcesses = true,
+            restart = true,
+            sourceMaps = true,
+            stopOnEntry = false,
+            --console = "integratedTerminal",
+        },
         { -- launch node 2
             type = 'node2',
             name = 'node2 Launch',
