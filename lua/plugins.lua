@@ -16,6 +16,7 @@ local plugins = {
     {'hrsh7th/cmp-path'}, -- nvim-cmp source for filesystem paths.
     {'hrsh7th/cmp-nvim-lsp'}, -- nvim-cmp source for neovim's built-in language server client.
     {'hrsh7th/cmp-nvim-lsp-signature-help'}, -- nvim-cmp source for displaying function signatures with the current parameter emphasized:
+    { "nvim-neotest/nvim-nio" }, -- A library for asynchronous IO in Neovim, inspired by the asyncio library in Python. The library focuses on providing both common asynchronous primitives and asynchronous APIs for Neovim's core.
     {
         "neovim/nvim-lspconfig",
         config = function()

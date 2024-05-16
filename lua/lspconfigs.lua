@@ -81,6 +81,7 @@ require'lspconfig'.tsserver.setup {}
 require'lspconfig'.eslint.setup{}
 require'lspconfig'.graphql.setup{}
 require'lspconfig'.dockerls.setup{}
+require'lspconfig'.pyright.setup{on_attach = on_attach,settings = {pyright = {autoImportCompletion = true,},python = {analysis = {autoSearchPaths = true,diagnosticMode = 'openFilesOnly',useLibraryCodeForTypes = true,typeCheckingMode = 'off'}}}}
 
 -- DAP Config
 
@@ -190,8 +191,11 @@ local DEBUGGER_PATH = vim.fn.stdpath "data" .. "/lazy/vscode-js-debug"
 require("dap-vscode-js").setup {
     node_path = "node",
     debugger_path = DEBUGGER_PATH,
+    set_log_level = "TRACE",
     -- debugger_cmd = {"js-debug-adapter"},
     adapters = {
+        "node",
+        "chrome",
         "pwa-node",
         "pwa-chrome",
         "pwa-msedge",
@@ -208,6 +212,37 @@ for _, language in ipairs {
     "vue"
 } do
     require("dap").configurations[language] = {
+        { -- sanofi-pqr v0
+            type = 'pwa-node',
+            trace = true,
+            request = 'attach',
+            --request = 'launch',
+            protocol = "inspector",
+            name = '(sanofi-pqr) Debug Nest Framework',
+            args = {"${workspaceFolder}/src/main.ts"},
+            envFile = "${workspaceFolder}/.env",
+            rootPath = "${workspaceFolder}",
+            path = "${workspaceFolder}",
+            cwd = "${workspaceFolder}",
+            localRoot = "${workspaceFolder}",
+            --runtimeExecutable = "npm",
+            --runtimeArgs = {
+              --"run",
+              --"start:debug",
+            --},
+            resolveSourceMapLocations = {
+                "${workspaceFolder}/dist/**",
+                "!**/node_modules/**"
+            },
+            skipFiles = { '<node_internals>/**' },
+            outFiles = {"${workspaceFolder}/dist/**"},
+            port = 9229,    
+            autoAttachChildProcesses = true,
+            restart = true,
+            sourceMaps = true,
+            stopOnEntry = true,
+            console = "integratedTerminal",
+        },
         { -- working conf for nest
             type = 'node2',
             request = 'launch',
@@ -272,9 +307,23 @@ for _, language in ipairs {
                 "!**/node_modules/**"
             }
         },
-        { -- attach pwa-chrome 3000
+        { -- launch pwa-chrome 8080
             type = "pwa-chrome",
-            name = "pwa-chrome Attach 3000",
+            name = "pwa-chrome Launch 8080",
+            request = "launch",
+            cwd = vim.fn.getcwd(),
+            sourceMaps = true,
+            trace = true,
+            url = "http://localhost:8080",
+            webRoot = "${workspaceFolder}/application",
+            resolveSourceMapLocations = {
+                "${workspaceFolder}/application/**",
+                "!**/node_modules/**"
+            }
+        },
+        { -- attach pwa-chrome 8080
+            type = "pwa-chrome",
+            name = "pwa-chrome Attach 8080",
             request = "attach",
             program = "${file}",
             cwd = vim.fn.getcwd(),
@@ -282,7 +331,7 @@ for _, language in ipairs {
             sourceMaps = true,
             trace = true,
             port = 9222,
-            url = "http://localhost:3000",
+            url = "http://localhost:8080",
             webRoot = "${workspaceFolder}",
             resolveSourceMapLocations = {
                 "${workspaceFolder}/**",
@@ -295,7 +344,17 @@ for _, language in ipairs {
             name = "pwa-node Attach Program (select pid)",
             cwd = vim.fn.getcwd(),
             processId = require("dap.utils").pick_process,
-            skipFiles = {"<node_internals>/**"}
+            cwd = "${workspaceFolder}",
+            skipFiles = { '<node_internals>/**' },
+            outFiles = {"${workspaceFolder}/**"},
+            resolveSourceMapLocations = {
+                "${workspaceFolder}/dist/**",
+                "!**/node_modules/**"
+            },
+            autoAttachChildProcesses = true,
+            restart = true,
+            sourceMaps = true,
+            stopOnEntry = true,
         },
         { -- launch pwa-node
             type = "pwa-node",

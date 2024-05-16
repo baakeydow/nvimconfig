@@ -46,6 +46,9 @@ require("nvim-lightbulb").setup({
 })
 vim.cmd('set termguicolors')
 require('colorizer').setup()
+require("neodev").setup({
+  library = { plugins = { "nvim-dap-ui" }, types = true },
+})
 
 -- Easier movement between split windows CTRL + {h, j, k, l}
 vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', {})
