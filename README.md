@@ -279,7 +279,7 @@ for (let group of dv.pages().groupBy(b => b.file.name)) {
 * ```it``` - inner block with <> tags
 * ```Esc``` - exit visual mode
 * **Tip**: - _Instead of b or B one can also use ( or { respectively._
-* ---
+---
 
 
 ## Visual commands
