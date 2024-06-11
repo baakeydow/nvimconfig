@@ -236,6 +236,7 @@ for _, language in ipairs {
             },
             skipFiles = { '<node_internals>/**' },
             outFiles = {"${workspaceFolder}/dist/**"},
+            host = "127.0.0.1",
             port = 9229,    
             autoAttachChildProcesses = true,
             restart = true,

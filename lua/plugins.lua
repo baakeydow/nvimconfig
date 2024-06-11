@@ -10,7 +10,7 @@ local plugins = {
     {'unkiwii/vim-nerdtree-sync'}, -- A plugin that show the current file on NERDtree
     {'j-hui/fidget.nvim', tag = 'legacy'}, -- Standalone UI for nvim-lsp progress. Eye candy for the impatient.
     {'norcalli/nvim-colorizer.lua'}, -- A high-performance color highlighter for Neovim which has no external dependencies! Written in performant Luajit.
-    {'folke/trouble.nvim'}, -- A pretty list for showing diagnostics, references, telescope results, quickfix and location lists to help you solve all the trouble your code is causing.
+    {'folke/trouble.nvim', cmd = 'Trouble'}, -- A pretty list for showing diagnostics, references, telescope results, quickfix and location lists to help you solve all the trouble your code is causing.
     {'hrsh7th/nvim-cmp'}, -- A completion engine plugin for neovim written in Lua. Completion sources are installed from external repositories and "sourced".
     {'hrsh7th/cmp-buffer'}, -- nvim-cmp source for buffer words.
     {'hrsh7th/cmp-path'}, -- nvim-cmp source for filesystem paths.
@@ -23,6 +23,15 @@ local plugins = {
             require "lspconfigs"
         end
     }, -- Configs for the Nvim LSP client (:help lsp).
+    {
+      "NeogitOrg/neogit",
+      dependencies = {
+        "nvim-lua/plenary.nvim",         -- required
+        "sindrets/diffview.nvim",        -- optional - Diff integration
+        "ibhagwan/fzf-lua",              -- required => Improved FZF => https://github.com/ibhagwan/fzf-lua
+      },
+      config = true
+    }, -- An interactive and powerful Git interface for Neovim, inspired by Magit
     {"williamboman/mason.nvim", opts = opts.mason}, -- Portable package manager for Neovim that runs everywhere Neovim runs. Easily install and manage LSP servers, DAP servers, linters, and formatters.
     {'williamboman/mason-lspconfig.nvim'}, -- mason-lspconfig bridges mason.nvim with the lspconfig plugin - making it easier to use both plugins together.
     {'jay-babu/mason-nvim-dap.nvim'}, -- mason-nvim-dap bridges mason.nvim with the nvim-dap plugin - making it easier to use both plugins together.
@@ -30,7 +39,7 @@ local plugins = {
     {'hrsh7th/vim-vsnip-integ'}, -- Snippet completion/expansion
     {'kosayoda/nvim-lightbulb'}, -- VSCode 💡 for neovim's built-in LSP.
     {'m-demare/hlargs.nvim'}, -- Highlight arguments' definitions and usages, asynchronously, using Treesitter
-    {'weilbith/nvim-code-action-menu', build = 'CodeActionMenu'}, -- NeoVim Code Action Menu
+    --{'weilbith/nvim-code-action-menu', build = 'CodeActionMenu'}, -- Deprecated NeoVim Code Action Menu  
     {'mfussenegger/nvim-dap'}, -- Debug Adapter Protocol client implementation for Neovim
     {'rcarriga/nvim-dap-ui'}, -- A UI for nvim-dap which provides a good out of the box configuration.
     {'leoluz/nvim-dap-go'}, -- An extension for nvim-dap providing configurations for launching go debugger (delve) and debugging individual tests.

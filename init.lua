@@ -49,6 +49,8 @@ require('colorizer').setup()
 require("neodev").setup({
   library = { plugins = { "nvim-dap-ui" }, types = true },
 })
+require('trouble').setup()
+require('neogit').setup()
 
 -- Easier movement between split windows CTRL + {h, j, k, l}
 vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', {})
@@ -144,23 +146,23 @@ vim.api.nvim_set_keymap("n", "<leader>\\", ":vsplit<CR>",
 vim.api.nvim_set_keymap("n", "<leader>n", "<c-w>n", {noremap = true})
 
 -- Open available Buffers
-vim.api.nvim_set_keymap("n", "<leader>o", ":Buffers<CR>",
+vim.api.nvim_set_keymap("n", "<leader>o", ":FzfLua buffers<CR>",
     {noremap = true, silent = true})
 
 -- Open available Git files
-vim.api.nvim_set_keymap("n", "<leader>g", ":GFiles<CR>",
+vim.api.nvim_set_keymap("n", "<leader>g", ":FzfLua git_files<CR>",
     {noremap = true, silent = true})
 
 -- Open recent files
-vim.api.nvim_set_keymap("n", "<leader>h", ":History<CR>",
+vim.api.nvim_set_keymap("n", "<leader>h", ":FzfLua oldfiles<CR>",
     {noremap = true, silent = true})
 
 -- Open recent commands
-vim.api.nvim_set_keymap("n", "<leader><leader>", ":History:<CR>",
+vim.api.nvim_set_keymap("n", "<leader><leader>", ":FzfLua command_history<CR>",
     {noremap = true, silent = true})
 
 -- Preview Project files
-vim.api.nvim_set_keymap("n", "<leader>f", ":FzfPreviewProjectFiles<CR>",
+vim.api.nvim_set_keymap("n", "<leader>f", ":FzfLua files<CR>",
     {noremap = true, silent = true})
 
 -- FZF
@@ -168,7 +170,7 @@ vim.api.nvim_set_keymap("n", "<leader>F", ":FZF<CR>",
     {noremap = true, silent = true})
 
 -- Search in all Project files
-vim.api.nvim_set_keymap("n", "<leader>v", ":Ag<CR>",
+vim.api.nvim_set_keymap("n", "<leader>v", ":FzfLua live_grep_native<CR>",
     {noremap = true, silent = true})
 
 -- NEXT/PREV Buffer
@@ -244,33 +246,31 @@ vim.api.nvim_set_keymap("n", "ldk", ":DapTerminate<CR>",
 
 -- Configure LSP code navigation shortcuts
 vim.api.nvim_set_keymap("n", "lgg", "<cmd>LspRestart<CR>", {noremap = true, silent = true})
-vim.api.nvim_set_keymap("n", "lgd", "<cmd>lua vim.lsp.buf.definition()<CR>",
+vim.api.nvim_set_keymap("n", "lgd", "<cmd>lua require(\"fzf-lua\").lsp_definitions({ jump_to_single_result = true })<CR>",
+    {noremap = true, silent = true})
+vim.api.nvim_set_keymap("n", "lgr", "<cmd>FzfLua lsp_references<CR>",
     {noremap = true, silent = true})
 vim.api.nvim_set_keymap("n", "lgk", "<cmd>lua vim.lsp.buf.signature_help()<CR>",
     {noremap = true, silent = true})
 vim.api.nvim_set_keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>",
     {noremap = true, silent = true})
-vim.api.nvim_set_keymap("n", "lgi", "<cmd>lua vim.lsp.buf.implementation()<CR>",
+vim.api.nvim_set_keymap("n", "lgi", "<cmd>FzfLua lsp_implementations<CR>",
     {noremap = true, silent = true})
-vim.api.nvim_set_keymap("n", "lgc", "<cmd>lua vim.lsp.buf.incoming_calls()<CR>",
+vim.api.nvim_set_keymap("n", "lgc", "<cmd>FzfLua lsp_incoming_calls<CR>",
     {noremap = true, silent = true})
-vim.api.nvim_set_keymap("n", "lgt", "<cmd>lua vim.lsp.buf.type_definition()<CR>",
+vim.api.nvim_set_keymap("n", "lgt", "<cmd>FzfLua lsp_typedefs<CR>",
     {noremap = true, silent = true})
 vim.api.nvim_set_keymap("n", "lgf", "<cmd>lua vim.lsp.buf.code_action()<CR>",
     {noremap = true, silent = true})
-vim.api.nvim_set_keymap("n", "lgr", "<cmd>lua vim.lsp.buf.references()<CR>",
+vim.api.nvim_set_keymap("n", "lga", "<cmd>FzfLua lsp_code_actions<CR>",
     {noremap = true, silent = true})
 vim.api.nvim_set_keymap("n", "lgn", "<cmd>lua vim.lsp.buf.rename()<CR>",
     {noremap = true, silent = true})
 vim.api.nvim_set_keymap("n", "lgs",
-    "<cmd>lua vim.lsp.buf.document_symbol()<CR>",
+    "<cmd>FzfLua lsp_document_symbols<CR>",
     {noremap = true, silent = true})
 vim.api.nvim_set_keymap("n", "lgw",
-    "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>",
-    {noremap = true, silent = true})
-
--- Replaced LSP implementation with code action plugin...
-vim.api.nvim_set_keymap("n", "lga", "<cmd>CodeActionMenu<CR>",
+    "<cmd>FzfLua lsp_workspace_symbols<CR>",
     {noremap = true, silent = true})
 
 vim.api.nvim_set_keymap("n", "[x", "<cmd>lua vim.diagnostic.goto_prev()<CR>",
@@ -321,7 +321,7 @@ vim.opt.backspace = "indent,eol,start"
 vim.opt.list = true
 vim.opt.wildmenu = true
 vim.opt.encoding = "utf-8"
-vim.opt.termencoding = "utf-8"
+--vim.opt.termencoding = "utf-8"
 vim.opt.backup = false
 vim.opt.writebackup = false
 vim.opt.swapfile = false
@@ -346,10 +346,10 @@ vim.opt.numberwidth = 4
 vim.opt.clipboard = "unnamed"
 
 -- No indent on paste
-vim.opt.pastetoggle = "<F2>"
+--vim.opt.pastetoggle = "<F2>"
 vim.api.nvim_set_keymap("n", "<F2>", ":set invpaste paste?<CR>",
     {noremap = true, silent = true})
-vim.opt.pastetoggle = "<F2>"
+--vim.opt.pastetoggle = "<F2>"
 
 vim.opt.showmode = true
 
