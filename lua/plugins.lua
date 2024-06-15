@@ -1,6 +1,7 @@
 local opts = require("opts")
 
 local plugins = {
+    {'rmagatti/auto-session'}, -- A small automated session manager for Neovim.
     {'github/copilot.vim'}, -- GitHub Copilot uses OpenAI Codex to suggest code and entire functions in real-time right from your editor.
     {'preservim/nerdtree'}, -- The NERDTree is a file system explorer for the Vim editor.
     {'preservim/nerdcommenter'}, -- Comment functions so powerful—no comment necessary.
@@ -55,8 +56,10 @@ local plugins = {
     {"catppuccin/nvim", name = "catppuccin"}, -- This port of Catppuccin is special because it was the first one and the one that originated the project itself.
     {'mg979/vim-visual-multi', branch = 'master'}, -- It's called vim-visual-multi in analogy with visual-block, but the plugin works mostly from normal mode.
     {'gpanders/editorconfig.nvim'}, -- Add support for .editorconfig file
-    {'vim-airline/vim-airline', lazy = false}, -- Lean & mean status/tabline for vim that's light as air.
-    {'vim-airline/vim-airline-themes'}, -- This is the official theme repository for vim-airline
+    {
+     'nvim-lualine/lualine.nvim',
+     dependencies = { 'nvim-tree/nvim-web-devicons' }
+    }, -- A blazing fast and easy to configure Neovim statusline written in Lua.
     {
         'yuki-yano/fzf-preview.vim',
         branch = 'release/remote',
