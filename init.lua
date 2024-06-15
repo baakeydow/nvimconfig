@@ -53,6 +53,7 @@ require('neogit').setup()
 require('lualine').setup{
   options = {
     theme = 'ayu_dark',
+    component_separators = '|',
   },
   tabline = {
     lualine_a = {{
@@ -72,7 +73,13 @@ require('lualine').setup{
     lualine_y = {'branch'},
     lualine_z = {'tabs'}
   },
-  sections = { lualine_c = { require('auto-session.lib').current_session_name } }
+  sections = {
+    lualine_b = {'diff', 'diagnostics'},
+    lualine_c = { require('auto-session.lib').current_session_name }
+  },
+  inactive_sections = {
+    lualine_c = {},
+  },
 }
 
 -- Easier movement between split windows CTRL + {h, j, k, l}
