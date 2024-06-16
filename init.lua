@@ -33,7 +33,7 @@ local plugins = require("plugins")
 
 require("lazy").setup(plugins)
 require("auto-session").setup {
-  log_level = "error",
+  log_level = vim.log.levels.ERROR,
   auto_session_suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/"},
 }
 require("mason").setup()
@@ -71,11 +71,22 @@ require('lualine').setup{
     }},
     lualine_x = {},
     lualine_y = {'branch'},
-    lualine_z = {'tabs'}
+    lualine_z = {{
+      'tabs',
+      cond = function()
+        return #vim.fn.gettabinfo() > 1
+      end,
+    }},
   },
   sections = {
     lualine_b = {'diff', 'diagnostics'},
-    lualine_c = { require('auto-session.lib').current_session_name }
+    lualine_c = {
+      {
+        'filename',
+        path = 1
+      },
+      require('auto-session.lib').current_session_name
+    }
   },
   inactive_sections = {
     lualine_c = {},
@@ -173,6 +184,14 @@ vim.api.nvim_set_keymap("n", "<leader>n", "<c-w>n", {noremap = true})
 
 -- Open available Buffers
 vim.api.nvim_set_keymap("n", "<leader>o", ":FzfLua buffers<CR>",
+{noremap = true, silent = true})
+
+-- Open available Tabs
+vim.api.nvim_set_keymap("n", "<leader>O", ":FzfLua tabs<CR>",
+{noremap = true, silent = true})
+
+-- Open available Marks
+vim.api.nvim_set_keymap("n", "<leader>m", ":FzfLua marks<CR>",
 {noremap = true, silent = true})
 
 -- Open available Git files
