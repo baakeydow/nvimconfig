@@ -51,7 +51,7 @@ require('trouble').setup()
 require('neogit').setup()
 require('lualine').setup{
   options = {
-    theme = 'ayu_dark',
+    theme = 'codedark',
     component_separators = '|',
   },
   tabline = {
@@ -91,6 +91,9 @@ require('lualine').setup{
     lualine_c = {},
   },
 }
+require'lspconfig'.cssls.setup{}
+require'lspconfig'.css_variables.setup{}
+require'lspconfig'.terraformls.setup{}
 
 -- Easier movement between split windows CTRL + {h, j, k, l}
 vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', {})

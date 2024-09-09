@@ -97,7 +97,39 @@ require'lspconfig'.solang.setup {}
 require'lspconfig'.eslint.setup{}
 require'lspconfig'.graphql.setup{}
 require'lspconfig'.dockerls.setup{}
-require'lspconfig'.pyright.setup{on_attach = on_attach,settings = {pyright = {autoImportCompletion = true,},python = {analysis = {autoSearchPaths = true,diagnosticMode = 'openFilesOnly',useLibraryCodeForTypes = true,typeCheckingMode = 'off'}}}}
+require'lspconfig'.dockerls.setup{}
+--require'lspconfig'.pylsp.setup{
+  --settings = {
+    --pylsp = {
+      --plugins = {
+        --pycodestyle = {
+          --ignore = {'W391', 'E275'},
+          --maxLineLength = 100
+        --}
+      --}
+    --}
+  --}
+--}
+require'lspconfig'.pyright.setup{
+    on_attach = on_attach,
+    settings = {
+        pyright = {
+            autoImportCompletion = true,
+        },
+        python = {
+            analysis = {
+                autoSearchPaths = true,
+                diagnosticMode = 'openFilesOnly',
+                useLibraryCodeForTypes = true,
+                typeCheckingMode = 'off'
+            }
+        }
+    }
+}
+require("CopilotChat").setup {
+  debug = true, -- Enable debugging
+  -- See Configuration section for rest
+}
 
 -- DAP Config
 
@@ -140,7 +172,7 @@ dap.configurations.rust = {
         name = 'Launch',
         program = function()
             return vim.fn.input('Path to executable: ',
-                vim.fn.getcwd() .. '/target/debug/', 'file')
+            vim.fn.getcwd() .. '/target/debug/', 'file')
         end,
         cwd = '${workspaceFolder}',
         stopOnEntry = false,
@@ -154,7 +186,7 @@ dap.configurations.rust = {
         name = 'Attach',
         program = function()
             return vim.fn.input('Path to executable: ',
-                vim.fn.getcwd() .. '/target/debug/', 'file')
+            vim.fn.getcwd() .. '/target/debug/', 'file')
         end,
         cwd = '${workspaceFolder}',
         stopOnEntry = false,
@@ -177,7 +209,7 @@ dap.adapters.node2 = {
     command = 'node-debug2-adapter',
     args = {
         vim.fn.stdpath("data") ..
-            '/mason/packages/node-debug2-adapter/out/src/nodeDebug.js'
+        '/mason/packages/node-debug2-adapter/out/src/nodeDebug.js'
     }
 }
 
@@ -186,7 +218,7 @@ dap.adapters.chrome = {
     command = "node",
     args = {
         vim.fn.stdpath("data") ..
-            "/mason/packages/chrome-debug-adapter/out/src/chromeDebug.js"
+        "/mason/packages/chrome-debug-adapter/out/src/chromeDebug.js"
     }
 }
 
@@ -227,8 +259,9 @@ for _, language in ipairs {
     "javascriptreact",
     "vue"
 } do
-    require("dap").configurations[language] = {
-        { -- sanofi-pqr v0
+
+require("dap").configurations[language] = {
+    { -- sanofi-pqr v0
             type = 'pwa-node',
             trace = true,
             request = 'attach',
@@ -253,7 +286,7 @@ for _, language in ipairs {
             skipFiles = { '<node_internals>/**' },
             outFiles = {"${workspaceFolder}/dist/**"},
             host = "127.0.0.1",
-            port = 9229,    
+            port = 9229,
             autoAttachChildProcesses = true,
             restart = true,
             sourceMaps = true,
@@ -265,15 +298,15 @@ for _, language in ipairs {
             request = 'launch',
             name = '(working) Debug Nest Framework',
             args = {"${workspaceFolder}/packages/tpa-core-api/src/main.ts"},
-            envFile = "${workspaceFolder}/packages/tpa-core-api/.env",
+            envFile = "${workspaceFolder}/.env",
             runtimeExecutable = "yarn",
             runtimeArgs = {
-              "run",
-              "start:debug",
-              "--",
-              "--inspect-brk"
+                "run",
+                "start:debug",
+                "--",
+                "--inspect-brk"
             },
-            port = 9229,    
+            port = 9229,
             autoAttachChildProcesses = true,
             restart = true,
             sourceMaps = true,
@@ -359,9 +392,9 @@ for _, language in ipairs {
             type = "pwa-node",
             request = "attach",
             name = "pwa-node Attach Program (select pid)",
-            cwd = vim.fn.getcwd(),
-            processId = require("dap.utils").pick_process,
+            --cwd = vim.fn.getcwd(),
             cwd = "${workspaceFolder}",
+            processId = require("dap.utils").pick_process,
             skipFiles = { '<node_internals>/**' },
             outFiles = {"${workspaceFolder}/**"},
             resolveSourceMapLocations = {

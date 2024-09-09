@@ -10,6 +10,18 @@ local plugins = {
     }, -- A neovim plugin that helps managing crates.io dependencies.
     {'rmagatti/auto-session'}, -- A small automated session manager for Neovim.
     {'github/copilot.vim'}, -- GitHub Copilot uses OpenAI Codex to suggest code and entire functions in real-time right from your editor.
+    {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    branch = "canary",
+    dependencies = {
+      { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
+    },
+    opts = {
+      debug = true, -- Enable debugging
+      -- See Configuration section for rest
+    },
+    -- See Commands section for default commands if you want to lazy load on them
+    }, -- Copilot Chat for Neovim
     {'preservim/nerdtree'}, -- The NERDTree is a file system explorer for the Vim editor.
     {'preservim/nerdcommenter'}, -- Comment functions so powerful—no comment necessary.
     {'ryanoasis/vim-devicons'}, -- Supports plugins such as NERDTree, vim-airline, CtrlP, powerline, denite, unite, lightline.vim, vim-startify, vimfiler, vim-buffet and flagship.
