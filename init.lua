@@ -36,8 +36,7 @@ require("auto-session").setup {
   log_level = vim.log.levels.ERROR,
   auto_session_suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/"},
 }
-require("mason").setup()
-require("mason-lspconfig").setup()
+
 require("mason-nvim-dap").setup()
 require("fidget").setup()
 require("hlargs").setup()

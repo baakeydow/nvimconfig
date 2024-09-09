@@ -1,6 +1,13 @@
 local opts = require("opts")
 
 local plugins = {
+    {
+      'saecki/crates.nvim',
+      tag = 'stable',
+      config = function()
+          require('crates').setup()
+      end,
+    }, -- A neovim plugin that helps managing crates.io dependencies.
     {'rmagatti/auto-session'}, -- A small automated session manager for Neovim.
     {'github/copilot.vim'}, -- GitHub Copilot uses OpenAI Codex to suggest code and entire functions in real-time right from your editor.
     {'preservim/nerdtree'}, -- The NERDTree is a file system explorer for the Vim editor.
