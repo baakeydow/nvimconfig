@@ -1,4 +1,5 @@
 # Vim custom config shortcuts CheatSheet
+- delete file and quit => `:execute '!rm ' . expand('%:p') | q!`
 - exit terminal mode => `ctrl + \ ctrl + n`
 - open split from fzf => `ctrl + v`
 - add quote arround word => `csw"`

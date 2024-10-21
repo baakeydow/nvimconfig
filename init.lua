@@ -371,6 +371,7 @@ elseif a:zoom
   vim.opt.writebackup = false
   vim.opt.swapfile = false
   vim.opt.ruler = true
+  vim.opt.conceallevel = 1
   vim.opt.title = true
   vim.opt.ignorecase = true
   vim.opt.smartcase = true
