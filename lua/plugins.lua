@@ -27,7 +27,7 @@ local plugins = {
       templates = {
         folder = "~/Obsidian_Vault/obsidian-bckp/21times2/TOOLZ/Templates",
       },
-      notes_subdir = "Current",
+      notes_subdir = "📮INBOX📮",
       new_notes_location = "notes_subdir",
       open_notes_in = "vsplit",
       attachments = {
