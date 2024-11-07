@@ -93,6 +93,9 @@ require("mason-lspconfig").setup_handlers({
     })
   end,
 })
+require'lspconfig'.cssls.setup{}
+require'lspconfig'.css_variables.setup{}
+require'lspconfig'.terraformls.setup{}
 require'lspconfig'.solang.setup {}
 require'lspconfig'.eslint.setup{}
 require'lspconfig'.graphql.setup{}

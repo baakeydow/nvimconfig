@@ -100,9 +100,6 @@ require('lualine').setup{
     lualine_c = {},
   },
 }
-require'lspconfig'.cssls.setup{}
-require'lspconfig'.css_variables.setup{}
-require'lspconfig'.terraformls.setup{}
 
 -- Easier movement between split windows CTRL + {h, j, k, l}
 vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', {})
