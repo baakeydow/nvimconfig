@@ -16,6 +16,15 @@ vim.g.code_action_menu_window_border = 'single'
 vim.g.webdevicons_enable = 1
 vim.g.webdevicons_enable_nerdtree = 1
 
+if vim.g.neovide == true then
+  vim.api.nvim_set_keymap("n", "<C-=>", ":lua vim.g.neovide_scale_factor = math.min(vim.g.neovide_scale_factor + 0.1,  1.0)<CR>", { silent = true })
+  vim.api.nvim_set_keymap("n", "<C-->", ":lua vim.g.neovide_scale_factor = math.max(vim.g.neovide_scale_factor - 0.1,  0.1)<CR>", { silent = true })
+  vim.api.nvim_set_keymap("n", "<C-+>", ":lua vim.g.neovide_transparency = math.min(vim.g.neovide_transparency + 0.05, 1.0)<CR>", { silent = true })
+  vim.api.nvim_set_keymap("n", "<C-_>", ":lua vim.g.neovide_transparency = math.max(vim.g.neovide_transparency - 0.05, 0.0)<CR>", { silent = true })
+  vim.api.nvim_set_keymap("n", "<C-0>", ":lua vim.g.neovide_scale_factor = 0.5<CR>", { silent = true })
+  vim.api.nvim_set_keymap("n", "<C-)>", ":lua vim.g.neovide_transparency = 0.9<CR>", { silent = true })
+end
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -357,7 +366,7 @@ elseif a:zoom
   vim.opt.smartindent = false
   vim.opt.cindent = false
   vim.opt.indentexpr = ''
-  vim.opt.guifont = 'Hack Regular Nerd Font Complete:h12'
+  vim.opt.guifont = 'Hack Nerd Font:h10'
   vim.opt.cursorline = true
   vim.opt.cursorcolumn = true
   vim.opt.foldmethod = "indent"
