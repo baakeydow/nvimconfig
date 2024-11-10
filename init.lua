@@ -25,6 +25,9 @@ if vim.g.neovide == true then
   vim.api.nvim_set_keymap("n", "<C-)>", ":lua vim.g.neovide_transparency = 0.9<CR>", { silent = true })
 end
 
+--vim.g.neovide_fullscreen = true
+vim.g.neovide_remember_window_size = true
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
