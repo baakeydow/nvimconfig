@@ -25,6 +25,10 @@ if vim.g.neovide == true then
   vim.api.nvim_set_keymap("n", "<C-)>", ":lua vim.g.neovide_transparency = 0.9<CR>", { silent = true })
 end
 
+if vim.g.neovide == true then
+  vim.keymap.set({ "n", "x" }, "<C-S-P>", '"+p', { desc = "Paste system clipboard" })
+end
+
 --vim.g.neovide_fullscreen = true
 vim.g.neovide_remember_window_size = true
 
@@ -103,6 +107,13 @@ require('lualine').setup{
     lualine_c = {},
   },
 }
+require("fzf-lua").setup({
+  grep = {
+    rg_opts = "--sort-files --hidden --column --line-number --no-heading " ..
+              "--color=always --smart-case -g '!{.git,node_modules}/*'",
+    resume = true,
+  }
+})
 
 -- Easier movement between split windows CTRL + {h, j, k, l}
 vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', {})

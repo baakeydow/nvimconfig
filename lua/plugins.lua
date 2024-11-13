@@ -95,6 +95,15 @@ local plugins = {
   {'hrsh7th/cmp-nvim-lsp-signature-help'}, -- nvim-cmp source for displaying function signatures with the current parameter emphasized:
   { "nvim-neotest/nvim-nio" }, -- A library for asynchronous IO in Neovim, inspired by the asyncio library in Python. The library focuses on providing both common asynchronous primitives and asynchronous APIs for Neovim's core.
   {
+    "ibhagwan/fzf-lua",
+    -- optional for icon support
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      -- calling `setup` is optional for customization
+      require("fzf-lua").setup({})
+    end
+  }, -- fzf changed my command life, it can change yours too, if you allow it.
+  {
     "neovim/nvim-lspconfig",
     config = function()
       require "lspconfigs"
