@@ -1,3 +1,4 @@
+local opts = require("opts")
 -- " ------------------------------------
 -- " Neovim LSP
 -- " ------------------------------------
@@ -77,7 +78,7 @@ require('lspconfig').gopls.setup {
 }
 
 require("mason").setup()
-require("mason-lspconfig").setup()
+require("mason-lspconfig").setup(opts.mason_lsp)
 require("mason-lspconfig").setup_handlers({
   -- Will be called for each installed server that doesn't have
   -- a dedicated handler.

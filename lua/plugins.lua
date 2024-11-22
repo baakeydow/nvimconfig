@@ -9,54 +9,7 @@ local plugins = {
     dependencies = {
       "nvim-lua/plenary.nvim",
     },
-    opts = {
-      workspaces = {
-        {
-          name = "dtksi",
-          path = "~/Obsidian_Vault/obsidian-bckp/21times2/",
-        },
-      },
-      completion = {
-        nvim_cmp = true,
-      },
-      daily_notes = {
-        folder = "Daily",
-        template = "daily.md",
-        default_tags = { "daily-nvim" },
-      },
-      templates = {
-        folder = "~/Obsidian_Vault/obsidian-bckp/21times2/TOOLZ/Templates",
-      },
-      notes_subdir = "📮INBOX📮",
-      new_notes_location = "notes_subdir",
-      open_notes_in = "vsplit",
-      attachments = {
-        img_folder = "Resources/Assets"
-      },
-      follow_url_func = function(url)
-        -- Open the URL in the default web browser.
-        vim.fn.jobstart({"open", url})  -- Mac OS
-        -- vim.fn.jobstart({"xdg-open", url})  -- linux
-      end,
-      picker = {
-        -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', or 'mini.pick'.
-        name = "fzf-lua",
-        -- Optional, configure key mappings for the picker. These are the defaults.
-        -- Not all pickers support all mappings.
-        note_mappings = {
-          -- Create a new note from your query.
-          new = "<C-x>",
-          -- Insert a link to the selected note.
-          insert_link = "<C-l>",
-        },
-        tag_mappings = {
-          -- Add tag(s) to current note.
-          tag_note = "<C-x>",
-          -- Insert a tag at the current location.
-          insert_tag = "<C-l>",
-        },
-      },
-    },
+    opts = opts.obsidian,
   }, --- A Neovim plugin for writing and navigating Obsidian vaults, written in Lua.
   {
     'saecki/crates.nvim',
@@ -118,8 +71,8 @@ local plugins = {
     },
     config = true
   }, -- An interactive and powerful Git interface for Neovim, inspired by Magit
-  {"williamboman/mason.nvim", opts = opts.mason}, -- Portable package manager for Neovim that runs everywhere Neovim runs. Easily install and manage LSP servers, DAP servers, linters, and formatters.
-  {'williamboman/mason-lspconfig.nvim'}, -- mason-lspconfig bridges mason.nvim with the lspconfig plugin - making it easier to use both plugins together.
+  {"williamboman/mason.nvim"}, -- Portable package manager for Neovim that runs everywhere Neovim runs. Easily install and manage LSP servers, DAP servers, linters, and formatters.
+  {'williamboman/mason-lspconfig.nvim', dependencies = { "williamboman/mason.nvim" }}, -- mason-lspconfig bridges mason.nvim with the lspconfig plugin - making it easier to use both plugins together.
   {'jay-babu/mason-nvim-dap.nvim'}, -- mason-nvim-dap bridges mason.nvim with the nvim-dap plugin - making it easier to use both plugins together.
   {'hrsh7th/vim-vsnip'}, -- VSCode(LSP)'s snippet feature in vim/nvim.
   {'hrsh7th/vim-vsnip-integ'}, -- Snippet completion/expansion
