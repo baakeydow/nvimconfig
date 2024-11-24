@@ -61,7 +61,6 @@ M.treesitter = {
       "lua_ls",
       "eslint",
       "gopls",
-      "denols",
       "cssls",
       "css_variables",
       "html",
