@@ -52,7 +52,34 @@ require("auto-session").setup {
   log_level = vim.log.levels.ERROR,
   auto_session_suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/"},
 }
-
+require('nvim-treesitter.configs').setup({
+  ensure_installed = { "markdown", "markdown_inline", "bash", "rust", "javascript", "typescript", "go", "python", "yaml", "json", "dockerfile" },
+  highlight = {
+    enable = true,
+  },
+})
+require('render-markdown').setup({
+    code = {
+        enabled = true,
+        sign = true,
+        style = 'full',
+        position = 'left',
+        language_pad = 0,
+        language_name = true,
+        disable_background = { 'diff' },
+        width = 'full',
+        left_margin = 0,
+        left_pad = 0,
+        right_pad = 0,
+        min_width = 0,
+        border = 'thin',
+        above = '▄',
+        below = '▀',
+        highlight = 'RenderMarkdownCode',
+        highlight_inline = 'RenderMarkdownCodeInline',
+        highlight_language = nil,
+    },
+})
 require("mason-nvim-dap").setup()
 require("fidget").setup()
 require("hlargs").setup()
@@ -110,7 +137,7 @@ require('lualine').setup{
 require("fzf-lua").setup({
   grep = {
     rg_opts = "--sort-files --hidden --column --line-number --no-heading " ..
-              "--color=always --smart-case -g '!{.git,node_modules}/*'",
+              "--color=always --smart-case -g '!{.git,node_modules,yarn.lock,dist,build}/*'",
     resume = true,
   }
 })

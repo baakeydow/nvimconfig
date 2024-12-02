@@ -94,6 +94,9 @@ M.treesitter = {
     attachments = {
       img_folder = "Resources/Assets"
     },
+    ui = {
+      enable = false,
+    },
     follow_url_func = function(url)
       -- Open the URL in the default web browser.
       vim.fn.jobstart({"open", url})  -- Mac OS
