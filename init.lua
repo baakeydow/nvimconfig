@@ -2,6 +2,7 @@ vim.cmd('set termguicolors')
 vim.cmd('set showtabline=1')
 
 vim.opt.showtabline = 1
+vim.g.markdown_folding = 1
 vim.g.mapleader = ' '
 vim.g.VM_default_mappings = 0
 vim.g.rustfmt_autosave = 1
@@ -50,35 +51,13 @@ local plugins = require("plugins")
 require("lazy").setup(plugins)
 require("auto-session").setup {
   log_level = vim.log.levels.ERROR,
-  auto_session_suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/"},
+  auto_session_suppress_dirs = { "~/Projects", "~/Downloads", "/"},
 }
 require('nvim-treesitter.configs').setup({
   ensure_installed = { "markdown", "markdown_inline", "bash", "rust", "javascript", "typescript", "go", "python", "yaml", "json", "dockerfile" },
   highlight = {
     enable = true,
   },
-})
-require('render-markdown').setup({
-    code = {
-        enabled = true,
-        sign = true,
-        style = 'full',
-        position = 'left',
-        language_pad = 0,
-        language_name = true,
-        disable_background = { 'diff' },
-        width = 'full',
-        left_margin = 0,
-        left_pad = 0,
-        right_pad = 0,
-        min_width = 0,
-        border = 'thin',
-        above = '▄',
-        below = '▀',
-        highlight = 'RenderMarkdownCode',
-        highlight_inline = 'RenderMarkdownCodeInline',
-        highlight_language = nil,
-    },
 })
 require("mason-nvim-dap").setup()
 require("fidget").setup()
@@ -136,12 +115,65 @@ require('lualine').setup{
 }
 require("fzf-lua").setup({
   grep = {
-    rg_opts = "--sort-files --hidden --column --line-number --no-heading " ..
-              "--color=always --smart-case -g '!{.git,node_modules,yarn.lock,dist,build}/*'",
+    fzf_opts = {
+      ['--info'] = 'inline',
+      ['--tiebreak'] = 'index',
+    },
+    rg_opts = "--column --line-number --no-heading --color=always --smart-case " ..
+    "--hidden --max-columns=200 --max-columns-preview " ..
+    "--glob '!{.git,node_modules,yarn.lock,dist,build,target,.next,.cache,tmp}/*' " ..
+    "--glob '!*.{lock,svg,min.js,min.css,map}'",
+    no_esc_esc = true,
+    multiprocess = true,
+    multiprocess_jobs = 4,
+    cache = {
+      enabled = true,
+      mode = "session",
+      limit = 100000,
+    },
     resume = true,
-  }
+    file_encoding = "utf8",
+    preview = {
+      wrap = "never",
+      opts = "hidden"
+    },
+    max_lines_preview = 1000,
+  },
+  global_resume = true,
+  global_cache = true,
 })
-
+require('render-markdown').setup({
+  heading = {
+    backgrounds = {
+      'RenderMarkdownH1Bg',
+      'RenderMarkdownH2Bg',
+      'RenderMarkdownH3Bg',
+      'RenderMarkdownH4Bg',
+      'RenderMarkdownH5Bg',
+      'RenderMarkdownH6Bg',
+    },
+  },
+  code = {
+    enabled = true,
+    sign = true,
+    style = 'full',
+    position = 'left',
+    language_pad = 0,
+    language_name = true,
+    disable_background = { 'diff' },
+    width = 'full',
+    left_margin = 0,
+    left_pad = 0,
+    right_pad = 0,
+    min_width = 0,
+    border = 'thin',
+    above = '▄',
+    below = '▀',
+    highlight = 'RenderMarkdownCode',
+    highlight_inline = 'RenderMarkdownCodeInline',
+    highlight_language = nil,
+  },
+})
 -- Easier movement between split windows CTRL + {h, j, k, l}
 vim.api.nvim_set_keymap('n', '<C-h>', '<C-w>h', {})
 vim.api.nvim_set_keymap('n', '<C-j>', '<C-w>j', {})
@@ -207,6 +239,11 @@ augroup restorezoom
 au WinEnter * silent! :call ToggleZoom(v:false)
 augroup END
 ]])
+
+vim.api.nvim_create_user_command('Details', function()
+  vim.api.nvim_put({'<details>', '<summary></summary>', '</details>'}, '', true, true)
+  vim.cmd('normal! 2k$i')
+end, {})
 
 -- Toggle Nerdtree
 vim.api.nvim_set_keymap('n', '<C-g>', ':NERDTreeToggle<CR>', {})
@@ -378,8 +415,9 @@ elseif a:zoom
   vim.api.nvim_set_keymap("n", "<space>q", "<cmd>Trouble<CR>",
   {noremap = true, silent = true})
 
-  vim.cmd.colorscheme "gruvbox" -- same as vim.cmd('colorscheme catppuccin-mocha')
+  --vim.cmd.colorscheme "gruvbox"
   --vim.cmd.colorscheme "catppuccin-mocha" -- same as vim.cmd('colorscheme catppuccin-mocha')
+  vim.cmd.colorscheme "OneDark"
 
   -- Automatically reload files when they change on disk
   vim.cmd('set autoread')

@@ -102,6 +102,8 @@ require'lspconfig'.eslint.setup{}
 require'lspconfig'.graphql.setup{}
 require'lspconfig'.dockerls.setup{}
 require'lspconfig'.dockerls.setup{}
+require'lspconfig'.pyright.setup{}
+require'lspconfig'.pylsp.setup{}
 --require'lspconfig'.pylsp.setup{
   --settings = {
     --pylsp = {

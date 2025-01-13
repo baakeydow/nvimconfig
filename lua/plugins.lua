@@ -1,6 +1,8 @@
 local opts = require("opts")
 
 local plugins = {
+  { "navarasu/onedark.nvim", name = "onedark", priority = 1000 },
+  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
   {
     'MeanderingProgrammer/render-markdown.nvim',
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
