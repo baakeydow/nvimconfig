@@ -1,64 +1,33 @@
 local opts = require("opts")
--- " ------------------------------------
--- " Neovim LSP
--- " ------------------------------------
--- "
--- " Configure Rust LSP.
--- "
--- " https://github.com/simrat39/rust-tools.nvim#configuration
--- "
-require('rust-tools').setup({
-    -- rust-tools options
-    tools = {
-        autoSetHints = true,
-        hoverWithActions = true,
-        inlay_hints = {
-            show_parameter_hints = true,
-            parameter_hints_prefix = "",
-            other_hints_prefix = ""
-        }
-    },
 
-    -- all the opts to send to nvim-lspconfig
-    -- these override the defaults set by rust-tools.nvim
-    -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
-    -- https://rust-analyzer.github.io/manual.html#features
-    server = {
-        settings = {
-            ["rust-analyzer"] = {
-                assist = {
-                    importEnforceGranularity = true,
-                    importPrefix = "crate"
-                },
-                cargo = {features = 'all'},
-                checkOnSave = {
-                    -- default: `cargo check`
-                    command = "clippy"
-                }
-            },
-            inlayHints = {
-                lifetimeElisionHints = {enable = true, useParameterNames = true}
-            }
-        }
-    }
+-- Neovim LSP Configuration
+-- 
+-- This configuration follows the KISS (Keep It Simple, Stupid) principle:
+-- 1. Mason automatically installs language servers listed in opts.mason_lsp.ensure_installed
+-- 2. Mason-lspconfig bridges Mason with nvim-lspconfig
+-- 3. Each server is explicitly configured below (automatic_enable = false prevents duplicates)
+-- 4. Most servers use default settings with nvim-cmp capabilities
+-- 5. Some servers (Rust, Python, Go) have custom configurations for enhanced features
+
+-- Setup Mason for package management
+require("mason").setup()
+
+-- Setup mason-lspconfig (auto-installs servers but doesn't enable them)
+local mason_lsp_config = vim.tbl_extend("force", opts.mason_lsp, {
+  automatic_enable = false  -- We configure servers manually below
 })
+require("mason-lspconfig").setup(mason_lsp_config)
 
--- " Configure Golang LSP.
--- "
--- " https://github.com/golang/tools/blob/master/gopls/doc/settings.md
--- " https://github.com/golang/tools/blob/master/gopls/doc/analyzers.md
--- " https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim
--- " https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#gopls
--- " https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim
--- " https://www.getman.io/posts/programming-go-in-neovim/
--- "
--- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
+-- Setup LSP servers
+local lspconfig = require("lspconfig")
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
--- The following example advertise capabilities to `clangd`.
-require'lspconfig'.clangd.setup {capabilities = capabilities}
-
-require('lspconfig').gopls.setup {
+-- Go Language Server
+-- https://github.com/golang/tools/blob/master/gopls/doc/settings.md
+-- https://github.com/golang/tools/blob/master/gopls/doc/analyzers.md
+-- https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim
+lspconfig.gopls.setup {
+    capabilities = capabilities,
     cmd = {'gopls'},
     settings = {
         gopls = {
@@ -73,68 +42,106 @@ require('lspconfig').gopls.setup {
             staticcheck = true,
             usePlaceholders = true
         }
-    },
-    on_attach = on_attach
-}
-
-require("mason").setup()
-require("mason-lspconfig").setup(opts.mason_lsp)
-require("mason-lspconfig").setup_handlers({
-  -- Will be called for each installed server that doesn't have
-  -- a dedicated handler.
-  --
-  function(server_name) -- default handler (optional)
-    -- https://github.com/neovim/nvim-lspconfig/pull/3232
-    if server_name == "tsserver" then
-      server_name = "ts_ls"
-    end
-    local capabilities = require("cmp_nvim_lsp").default_capabilities()
-    require("lspconfig")[server_name].setup({
-      capabilities = capabilities,
-    })
-  end,
-})
-require'lspconfig'.cssls.setup{}
-require'lspconfig'.css_variables.setup{}
-require'lspconfig'.terraformls.setup{}
-require'lspconfig'.solang.setup {}
-require'lspconfig'.eslint.setup{}
-require'lspconfig'.graphql.setup{}
-require'lspconfig'.dockerls.setup{}
-require'lspconfig'.dockerls.setup{}
-require'lspconfig'.pyright.setup{}
-require'lspconfig'.pylsp.setup{}
---require'lspconfig'.pylsp.setup{
-  --settings = {
-    --pylsp = {
-      --plugins = {
-        --pycodestyle = {
-          --ignore = {'W391', 'E275'},
-          --maxLineLength = 100
-        --}
-      --}
-    --}
-  --}
---}
-require'lspconfig'.pyright.setup{
-    on_attach = on_attach,
-    settings = {
-        pyright = {
-            autoImportCompletion = true,
-        },
-        python = {
-            analysis = {
-                autoSearchPaths = true,
-                diagnosticMode = 'openFilesOnly',
-                useLibraryCodeForTypes = true,
-                typeCheckingMode = 'off'
-            }
-        }
     }
 }
+
+-- C/C++
+lspconfig.clangd.setup { capabilities = capabilities }
+
+-- Web Development Servers
+lspconfig.cssls.setup{ capabilities = capabilities }          -- CSS
+lspconfig.css_variables.setup{ capabilities = capabilities }  -- CSS Variables
+lspconfig.html.setup{ capabilities = capabilities }           -- HTML
+lspconfig.ts_ls.setup{ capabilities = capabilities }          -- TypeScript/JavaScript (renamed from tsserver)
+lspconfig.eslint.setup{ capabilities = capabilities }         -- ESLint
+lspconfig.graphql.setup{ capabilities = capabilities }        -- GraphQL
+lspconfig.prismals.setup{ capabilities = capabilities }       -- Prisma ORM
+
+-- Infrastructure & Scripting
+lspconfig.terraformls.setup{ capabilities = capabilities }    -- Terraform
+lspconfig.dockerls.setup{ capabilities = capabilities }       -- Docker
+lspconfig.bashls.setup{ capabilities = capabilities }         -- Bash
+lspconfig.lua_ls.setup{ capabilities = capabilities }         -- Lua
+
+-- Blockchain
+lspconfig.solang.setup{ capabilities = capabilities }         -- Solidity
+-- Python Development (Ruff + Pyright for comprehensive support)
+-- Ruff handles linting and formatting, Pyright handles type checking and navigation
+lspconfig.ruff.setup{
+  capabilities = capabilities,
+  on_attach = function(client, _)
+    -- Disable hover in favor of Pyright
+    client.server_capabilities.hoverProvider = false
+    -- Disable definition capabilities (Pyright handles these)
+    client.server_capabilities.definitionProvider = false
+    client.server_capabilities.referencesProvider = false
+    client.server_capabilities.typeDefinitionProvider = false
+    client.server_capabilities.implementationProvider = false
+    client.server_capabilities.declarationProvider = false
+  end,
+  init_options = {
+    settings = {
+      args = { "--line-length=100" }
+    }
+  }
+}
+-- Pyright for Python type checking and navigation
+lspconfig.pyright.setup{
+  capabilities = capabilities,
+  settings = {
+    pyright = {
+      disableOrganizeImports = true,  -- Using Ruff for this
+      disableTaggedHints = true,
+    },
+    python = {
+      analysis = {
+        diagnosticSeverityOverrides = {
+          -- Avoid duplicate diagnostics from Ruff
+          reportUnusedVariable = "none",
+          reportUnusedImport = "none"
+        },
+        typeCheckingMode = "basic",
+        useLibraryCodeForTypes = true
+      }
+    }
+  }
+}
+
+-- Rust Language Server (using rust-tools.nvim for enhanced features)
+-- https://github.com/simrat39/rust-tools.nvim#configuration
+-- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
+-- https://rust-analyzer.github.io/manual.html#features
+require('rust-tools').setup({
+  tools = {
+    autoSetHints = true,
+    hoverWithActions = true,
+    inlay_hints = {
+      show_parameter_hints = true,
+      parameter_hints_prefix = "",
+      other_hints_prefix = ""
+    }
+  },
+  server = {
+    capabilities = capabilities,
+    settings = {
+      ["rust-analyzer"] = {
+        assist = {
+          importEnforceGranularity = true,
+          importPrefix = "crate"
+        },
+        cargo = { features = 'all' },
+        checkOnSave = { command = "clippy" }
+      },
+      inlayHints = {
+        lifetimeElisionHints = { enable = true, useParameterNames = true }
+      }
+    }
+  }
+})
+
+-- Copilot Chat
 require("CopilotChat").setup {
-  debug = true, -- Enable debugging
-  -- See Configuration section for rest
+  debug = true
 }
 
 -- DAP Config
@@ -544,3 +551,4 @@ cmp.setup({
         {name = 'nvim_lsp_signature_help'}
     }
 })
+

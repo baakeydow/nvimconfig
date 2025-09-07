@@ -67,6 +67,8 @@ M.treesitter = {
       "solang",
       "clangd",
       "graphql",
+      "pyright",
+      "ruff"
     }
   }
 

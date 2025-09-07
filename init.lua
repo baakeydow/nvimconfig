@@ -27,7 +27,13 @@ if vim.g.neovide == true then
 end
 
 if vim.g.neovide == true then
-  vim.keymap.set({ "n", "x" }, "<C-S-P>", '"+p', { desc = "Paste system clipboard" })
+  --vim.keymap.set({ "n", "x" }, "<C-S-P>", '"+p', { desc = "Paste system clipboard" })
+
+  --vim.keymap.set({ "n", "x" }, "<C-S-C>", '"+y', { desc = "Copy system clipboard" })
+  --vim.keymap.set({ "n", "x" }, "<C-S-V>", '"+p', { desc = "Paste system clipboard" })
+  vim.api.nvim_set_keymap("v", "<sc-c>", '"+y', { noremap = true }) -- Select line(s) in visual mode and copy (CTRL+Shift+V)
+  vim.api.nvim_set_keymap("i", "<sc-v>", '<ESC>"+p', { noremap = true }) -- Paste in insert mode (CTRL+Shift+C)
+  vim.api.nvim_set_keymap("n", "<sc-v>", '"+p', { noremap = true }) -- Paste in normal mode (CTRL+Shift+C)
 end
 
 --vim.g.neovide_fullscreen = true
@@ -141,6 +147,13 @@ require("fzf-lua").setup({
   },
   global_resume = true,
   global_cache = true,
+  lsp = {
+    async_or_timeout = 3000,
+    -- When a list of LSP symbols is shown, typing will start live filtering
+    fzf_opts = {
+      ["--no-separator"] = "",
+    }
+  }
 })
 require('render-markdown').setup({
   heading = {
@@ -231,7 +244,7 @@ autocmd BufEnter * TSBufEnable highlight
 
 -- Format on save
 --vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]]
---vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
+vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
 
 -- Restore zoom
 vim.cmd([[
@@ -339,17 +352,21 @@ elseif a:zoom
   ]])
 
   -- Python Settings
-  vim.cmd([[
-  autocmd FileType python set softtabstop=4
-  autocmd FileType python set tabstop=4
-  autocmd FileType python set autoindent
-  autocmd FileType python set expandtab
-  autocmd FileType python set textwidth=80
-  autocmd FileType python set smartindent
-  autocmd FileType python set shiftwidth=4
-  autocmd FileType python map <buffer> <F2> :w<CR>:exec '! python' shellescape(@%, 1)<CR>
-  autocmd FileType python imap <buffer> <F2> <esc>:w<CR>:exec '! python' shellescape(@%, 1)<CR>
-  ]])
+  --vim.cmd([[
+  --autocmd FileType python set softtabstop=4
+  --autocmd FileType python set tabstop=4
+  --autocmd FileType python set autoindent
+  --autocmd FileType python set expandtab
+  --autocmd FileType python set textwidth=80
+  --autocmd FileType python set smartindent
+  --autocmd FileType python set shiftwidth=4
+  --autocmd FileType python map <buffer> <F2> :w<CR>:exec '! python' shellescape(@%, 1)<CR>
+  --autocmd FileType python imap <buffer> <F2> <esc>:w<CR>:exec '! python' shellescape(@%, 1)<CR>
+  --]])
+
+
+  -- exit terminal mode
+  vim.api.nvim_set_keymap("t", "<Esc>", "<C-\\><C-n>", {noremap = true, silent = true})
 
   -- Toggle Breakpoint
   vim.api.nvim_set_keymap("n", "ldb", ":DapToggleBreakpoint<CR>",
@@ -377,7 +394,9 @@ elseif a:zoom
 
   -- Configure LSP code navigation shortcuts
   vim.api.nvim_set_keymap("n", "lgg", "<cmd>LspRestart<CR>", {noremap = true, silent = true})
-  vim.api.nvim_set_keymap("n", "lgd", "<cmd>lua require(\"fzf-lua\").lsp_definitions({ jump_to_single_result = true })<CR>",
+  vim.api.nvim_set_keymap("n", "lgd", "<cmd>lua require(\"fzf-lua\").lsp_definitions()<CR>",
+  {noremap = true, silent = true})
+  vim.api.nvim_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>",
   {noremap = true, silent = true})
   vim.api.nvim_set_keymap("n", "lgr", "<cmd>FzfLua lsp_references<CR>",
   {noremap = true, silent = true})
@@ -417,7 +436,7 @@ elseif a:zoom
 
   --vim.cmd.colorscheme "gruvbox"
   --vim.cmd.colorscheme "catppuccin-mocha" -- same as vim.cmd('colorscheme catppuccin-mocha')
-  vim.cmd.colorscheme "OneDark"
+  vim.cmd.colorscheme "onedark"
 
   -- Automatically reload files when they change on disk
   vim.cmd('set autoread')
