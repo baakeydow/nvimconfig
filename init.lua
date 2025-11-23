@@ -52,6 +52,30 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- Configure rustaceanvim before lazy.nvim loads plugins
+vim.g.rustaceanvim = {
+  server = {
+    default_settings = {
+      ["rust-analyzer"] = {
+        assist = {
+          importEnforceGranularity = true,
+          importPrefix = "crate"
+        },
+        cargo = { features = 'all' },
+        check = {
+          command = "clippy"
+        },
+        inlayHints = {
+          lifetimeElisionHints = { enable = "always", useParameterNames = true }
+        }
+      }
+    },
+    on_attach = function(client, bufnr)
+      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+    end
+  }
+}
+
 local plugins = require("plugins")
 
 require("lazy").setup(plugins)

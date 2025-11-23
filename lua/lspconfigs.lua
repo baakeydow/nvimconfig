@@ -19,14 +19,13 @@ local mason_lsp_config = vim.tbl_extend("force", opts.mason_lsp, {
 require("mason-lspconfig").setup(mason_lsp_config)
 
 -- Setup LSP servers
-local lspconfig = require("lspconfig")
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 -- Go Language Server
 -- https://github.com/golang/tools/blob/master/gopls/doc/settings.md
 -- https://github.com/golang/tools/blob/master/gopls/doc/analyzers.md
 -- https://github.com/golang/tools/blob/master/gopls/doc/vim.md#neovim
-lspconfig.gopls.setup {
+vim.lsp.config('gopls', {
     capabilities = capabilities,
     cmd = {'gopls'},
     settings = {
@@ -43,31 +42,45 @@ lspconfig.gopls.setup {
             usePlaceholders = true
         }
     }
-}
+})
+vim.lsp.enable('gopls')
 
 -- C/C++
-lspconfig.clangd.setup { capabilities = capabilities }
+vim.lsp.config('clangd', { capabilities = capabilities })
+vim.lsp.enable('clangd')
 
 -- Web Development Servers
-lspconfig.cssls.setup{ capabilities = capabilities }          -- CSS
-lspconfig.css_variables.setup{ capabilities = capabilities }  -- CSS Variables
-lspconfig.html.setup{ capabilities = capabilities }           -- HTML
-lspconfig.ts_ls.setup{ capabilities = capabilities }          -- TypeScript/JavaScript (renamed from tsserver)
-lspconfig.eslint.setup{ capabilities = capabilities }         -- ESLint
-lspconfig.graphql.setup{ capabilities = capabilities }        -- GraphQL
-lspconfig.prismals.setup{ capabilities = capabilities }       -- Prisma ORM
+vim.lsp.config('cssls', { capabilities = capabilities })          -- CSS
+vim.lsp.enable('cssls')
+vim.lsp.config('css_variables', { capabilities = capabilities })  -- CSS Variables
+vim.lsp.enable('css_variables')
+vim.lsp.config('html', { capabilities = capabilities })           -- HTML
+vim.lsp.enable('html')
+vim.lsp.config('ts_ls', { capabilities = capabilities })          -- TypeScript/JavaScript (renamed from tsserver)
+vim.lsp.enable('ts_ls')
+vim.lsp.config('eslint', { capabilities = capabilities })         -- ESLint
+vim.lsp.enable('eslint')
+vim.lsp.config('graphql', { capabilities = capabilities })        -- GraphQL
+vim.lsp.enable('graphql')
+vim.lsp.config('prismals', { capabilities = capabilities })       -- Prisma ORM
+vim.lsp.enable('prismals')
 
 -- Infrastructure & Scripting
-lspconfig.terraformls.setup{ capabilities = capabilities }    -- Terraform
-lspconfig.dockerls.setup{ capabilities = capabilities }       -- Docker
-lspconfig.bashls.setup{ capabilities = capabilities }         -- Bash
-lspconfig.lua_ls.setup{ capabilities = capabilities }         -- Lua
+vim.lsp.config('terraformls', { capabilities = capabilities })    -- Terraform
+vim.lsp.enable('terraformls')
+vim.lsp.config('dockerls', { capabilities = capabilities })       -- Docker
+vim.lsp.enable('dockerls')
+vim.lsp.config('bashls', { capabilities = capabilities })         -- Bash
+vim.lsp.enable('bashls')
+vim.lsp.config('lua_ls', { capabilities = capabilities })         -- Lua
+vim.lsp.enable('lua_ls')
 
 -- Blockchain
-lspconfig.solang.setup{ capabilities = capabilities }         -- Solidity
+vim.lsp.config('solang', { capabilities = capabilities })         -- Solidity
+vim.lsp.enable('solang')
 -- Python Development (Ruff + Pyright for comprehensive support)
 -- Ruff handles linting and formatting, Pyright handles type checking and navigation
-lspconfig.ruff.setup{
+vim.lsp.config('ruff', {
   capabilities = capabilities,
   on_attach = function(client, _)
     -- Disable hover in favor of Pyright
@@ -84,9 +97,10 @@ lspconfig.ruff.setup{
       args = { "--line-length=100" }
     }
   }
-}
+})
+vim.lsp.enable('ruff')
 -- Pyright for Python type checking and navigation
-lspconfig.pyright.setup{
+vim.lsp.config('pyright', {
   capabilities = capabilities,
   settings = {
     pyright = {
@@ -105,39 +119,15 @@ lspconfig.pyright.setup{
       }
     }
   }
-}
+})
+vim.lsp.enable('pyright')
 
--- Rust Language Server (using rust-tools.nvim for enhanced features)
--- https://github.com/simrat39/rust-tools.nvim#configuration
+-- Rust Language Server (using rustaceanvim for enhanced features)
+-- https://github.com/mrcjkb/rustaceanvim
 -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
 -- https://rust-analyzer.github.io/manual.html#features
-require('rust-tools').setup({
-  tools = {
-    autoSetHints = true,
-    hoverWithActions = true,
-    inlay_hints = {
-      show_parameter_hints = true,
-      parameter_hints_prefix = "",
-      other_hints_prefix = ""
-    }
-  },
-  server = {
-    capabilities = capabilities,
-    settings = {
-      ["rust-analyzer"] = {
-        assist = {
-          importEnforceGranularity = true,
-          importPrefix = "crate"
-        },
-        cargo = { features = 'all' },
-        checkOnSave = { command = "clippy" }
-      },
-      inlayHints = {
-        lifetimeElisionHints = { enable = true, useParameterNames = true }
-      }
-    }
-  }
-})
+-- Note: rustaceanvim is configured in init.lua via vim.g.rustaceanvim
+-- No setup call needed - the plugin works out of the box
 
 -- Copilot Chat
 require("CopilotChat").setup {
