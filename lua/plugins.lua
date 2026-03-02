@@ -12,7 +12,6 @@ local plugins = {
       require('onedark').load()
     end
   },
-  { "catppuccin/nvim",      name = "catppuccin", priority = 1000 },
   {
     'MeanderingProgrammer/render-markdown.nvim',
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
@@ -125,17 +124,22 @@ local plugins = {
     build = ':UpdateRemotePlugins'
   },                                                                    -- fzf-preview is a (Neo)vim plugin and coc extension written in TypeScript that provide powerful integration with fzf.
   { 'drewtempelmeyer/palenight.vim' },                                  -- A dark color scheme for Vim/Neovim based off the Material Pale Night color scheme. Much of the work is based on the lovely onedark.vim color scheme.
-  { 'folke/tokyonight.nvim',           branch = 'main' },               -- A dark and light Neovim theme written in Lua ported from the Visual Studio Code TokyoNight theme. Includes extra themes for Kitty, Alacritty, iTerm and Fish.
-  { "ellisonleao/gruvbox.nvim",        priority = 1000 },               -- Gruvbox Material
-  { 'junegunn/fzf',                    build = ':call fzf#install()' }, -- fzf is a general-purpose command-line fuzzy finder.
+  { 'folke/tokyonight.nvim',        branch = 'main' },                  -- A dark and light Neovim theme written in Lua ported from the Visual Studio Code TokyoNight theme. Includes extra themes for Kitty, Alacritty, iTerm and Fish.
+  { "ellisonleao/gruvbox.nvim",     priority = 1000 },                  -- Gruvbox Material
+  { 'junegunn/fzf',                 build = ':call fzf#install()' },    -- fzf is a general-purpose command-line fuzzy finder.
   { 'junegunn/fzf.vim' },                                               -- Things you can do with fzf and Vim.
   { 'airblade/vim-gitgutter' },                                         -- " Show git diff of lines edited
   { 'tpope/vim-fugitive' },                                             -- " :Git
   { 'tpope/vim-surround' },                                             -- Surround.vim is all about "surroundings": parentheses, brackets, quotes, XML tags, and more.
   { 'nvim-lua/plenary.nvim' },                                          -- " All the lua functions I don't want to write twice.
-  { "nvim-treesitter/nvim-treesitter", opts = opts.treesitter },        -- The goal of nvim-treesitter is both to provide a simple and easy way to use the interface for tree-sitter in Neovim and to provide some basic functionality
-  { 'rust-lang/rust.vim' },                                             -- This is a Vim plugin that provides Rust file detection, syntax highlighting, formatting, Syntastic integration, and more. It requires Vim 8 or higher for full functionality. Some things may not work on earlier versions.
-  { 'mrcjkb/rustaceanvim', version = '^6', lazy = false }               -- Modern Rust tooling for Neovim (replaces rust-tools.nvim)
+  {
+    "nvim-treesitter/nvim-treesitter",
+    branch = "master",
+    build = ":TSUpdate",
+    opts = opts.treesitter,
+  },                                                      -- The goal of nvim-treesitter is both to provide a simple and easy way to use the interface for tree-sitter in Neovim and to provide some basic functionality
+  { 'rust-lang/rust.vim' },                               -- This is a Vim plugin that provides Rust file detection, syntax highlighting, formatting, Syntastic integration, and more. It requires Vim 8 or higher for full functionality. Some things may not work on earlier versions.
+  { 'mrcjkb/rustaceanvim', version = '^6', lazy = false } -- Modern Rust tooling for Neovim (replaces rust-tools.nvim)
 }
 
 return plugins
