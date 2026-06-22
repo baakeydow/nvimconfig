@@ -1,52 +1,16 @@
 local M = {}
 
-M.treesitter = {
-  indent = {
-    enable = true
-    -- disable = {
-      --   "python"
-      -- },
-    },
-    build = ":TSUpdate",
-    highlight = {enable = true},
-    rainbow = {enable = true, extended_mode = true, max_file_lines = nil},
-    automatic_installation = true,
-    ensure_installed = {
-      "vim",
-      "vimdoc",
-      "graphql",
-      "lua",
-      "http",
-      "html",
-      "css",
-      "markdown",
-      "markdown_inline",
-      "python",
-      "javascript",
-      "typescript",
-      "tsx",
-      "json",
-      "vue",
-      "svelte",
-      "dockerfile",
-      "go",
-      "gosum",
-      "gomod",
-      "gowork",
-      "regex",
-      "ruby",
-      "rust",
-      "toml",
-      "yaml",
-      "hcl",
-      "c",
-      "zig",
-      "bash",
-      "c",
-      "cmake",
-      "make"
-    }
-  }
+-- Parsers to install on the nvim-treesitter `main` branch.
+-- (main replaced the old module table: no indent/highlight/rainbow/ensure_installed
+--  keys — highlighting is enabled via a FileType autocmd in plugins.lua, and parsers
+--  are installed with require("nvim-treesitter").install(...).)
+M.treesitter_ensure = {
+  "vim", "vimdoc", "graphql", "lua", "http", "html", "css",
+  "markdown", "markdown_inline", "python", "javascript", "typescript", "tsx",
+  "json", "vue", "svelte", "dockerfile", "go", "gomod", "gowork", "regex",
+  "ruby", "rust", "toml", "yaml", "hcl", "c", "zig", "bash", "cmake", "make",
+  "latex", -- render-markdown math ($...$ / $$...$$)
+}
 
   M.mason_lsp = {
     automatic_installation = true,
@@ -79,9 +43,9 @@ M.treesitter = {
         path = "~/Obsidian_Vault/obsidian-bckp/21times2/",
       },
     },
-    completion = {
-      nvim_cmp = true,
-    },
+    -- completion.nvim_cmp removed: the fork now provides completion via the
+    -- built-in obsidian-ls LSP server automatically.
+    legacy_commands = false, -- use new `Obsidian <subcommand>` form, silence the warning
     daily_notes = {
       folder = "Daily",
       template = "daily.md",
@@ -94,16 +58,13 @@ M.treesitter = {
     new_notes_location = "notes_subdir",
     open_notes_in = "vsplit",
     attachments = {
-      img_folder = "Resources/Assets"
+      folder = "Resources/Assets" -- renamed from img_folder
     },
     ui = {
       enable = false,
     },
-    follow_url_func = function(url)
-      -- Open the URL in the default web browser.
-      vim.fn.jobstart({"open", url})  -- Mac OS
-      -- vim.fn.jobstart({"xdg-open", url})  -- linux
-    end,
+    -- follow_url_func removed: the fork uses vim.ui.open by default, which on
+    -- macOS opens with `open` just like the old jobstart call did.
     picker = {
       -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', or 'mini.pick'.
       name = "fzf-lua",

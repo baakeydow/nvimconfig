@@ -199,31 +199,22 @@ dap.configurations.rust = {
     }
 }
 
+-- Rust debugging via codelldb (installed with :MasonInstall codelldb).
+-- Replaces the old hardcoded llvm 16 lldb-vscode path.
 dap.adapters.rust = {
-    type = 'executable',
-    command = '/opt/homebrew/Cellar/llvm/16.0.2/bin/lldb-vscode',
-    name = 'lldb'
+    type = 'server',
+    port = '${port}',
+    executable = {
+        command = vim.fn.stdpath("data") .. '/mason/bin/codelldb',
+        args = {'--port', '${port}'}
+    }
 }
 
 dap.adapters['pwa-node'] = {type = 'server', host = '127.0.0.1', port = 45635}
 
-dap.adapters.node2 = {
-    type = 'executable',
-    command = 'node-debug2-adapter',
-    args = {
-        vim.fn.stdpath("data") ..
-        '/mason/packages/node-debug2-adapter/out/src/nodeDebug.js'
-    }
-}
-
-dap.adapters.chrome = {
-    type = "executable",
-    command = "node",
-    args = {
-        vim.fn.stdpath("data") ..
-        "/mason/packages/chrome-debug-adapter/out/src/chromeDebug.js"
-    }
-}
+-- node2 (node-debug2) and the chrome-debug adapter are deprecated and no longer
+-- shipped by Mason. JS/TS debugging now goes through pwa-node / pwa-chrome,
+-- registered by dap-vscode-js below (vscode-js-debug).
 
 dap.listeners.after.event_initialized["dapui_config"] = function()
     dapui.open()
@@ -297,7 +288,7 @@ require("dap").configurations[language] = {
             console = "integratedTerminal",
         },
         { -- working conf for nest
-            type = 'node2',
+            type = 'pwa-node',
             request = 'launch',
             name = '(working) Debug Nest Framework',
             args = {"${workspaceFolder}/projects/tpa-core-api/src/main.ts"},
@@ -316,9 +307,9 @@ require("dap").configurations[language] = {
             stopOnEntry = false,
             --console = "integratedTerminal",
         },
-        { -- launch node 2
-            type = 'node2',
-            name = 'node2 Launch',
+        { -- launch node
+            type = 'pwa-node',
+            name = 'pwa-node Launch',
             request = 'launch',
             program = '${file}',
             cwd = vim.fn.getcwd(),
@@ -331,9 +322,9 @@ require("dap").configurations[language] = {
                 "!**/node_modules/**"
             }
         },
-        { -- attach node 2
-            type = 'node2',
-            name = 'node2 Attach',
+        { -- attach node
+            type = 'pwa-node',
+            name = 'pwa-node Attach',
             request = 'attach',
             program = '${file}',
             cwd = vim.fn.getcwd(),

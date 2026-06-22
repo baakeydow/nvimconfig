@@ -22,7 +22,7 @@ local plugins = {
     opts = {},
   },
   {
-    "epwalsh/obsidian.nvim",
+    "obsidian-nvim/obsidian.nvim", -- maintained community fork (epwalsh's is archived)
     version = "*",
     lazy = true,
     ft = "markdown",
@@ -59,7 +59,7 @@ local plugins = {
   { 'Xuyuanp/nerdtree-git-plugin' },                         -- A plugin of NERDTree showing git status flags.
   { 'unkiwii/vim-nerdtree-sync' },                           -- A plugin that show the current file on NERDtree
   { 'j-hui/fidget.nvim',                  tag = 'legacy' },  -- Standalone UI for nvim-lsp progress. Eye candy for the impatient.
-  { 'norcalli/nvim-colorizer.lua' },                         -- A high-performance color highlighter for Neovim which has no external dependencies! Written in performant Luajit.
+  { 'catgoose/nvim-colorizer.lua' },                         -- maintained fork of norcalli's (abandoned 2024); fixes vim.tbl_flatten deprecation. High-performance color highlighter.
   { 'folke/trouble.nvim',                 cmd = 'Trouble' }, -- A pretty list for showing diagnostics, references, telescope results, quickfix and location lists to help you solve all the trouble your code is causing.
   { 'hrsh7th/nvim-cmp' },                                    -- A completion engine plugin for neovim written in Lua. Completion sources are installed from external repositories and "sourced".
   { 'hrsh7th/cmp-buffer' },                                  -- nvim-cmp source for buffer words.
@@ -104,7 +104,15 @@ local plugins = {
   { 'leoluz/nvim-dap-go' },                                                              -- An extension for nvim-dap providing configurations for launching go debugger (delve) and debugging individual tests.
   { 'folke/neodev.nvim' },                                                               -- Neovim setup for init.lua and plugin development with full signature help, docs and completion for the nvim lua API.
   { 'mxsdev/nvim-dap-vscode-js' },                                                       -- nvim-dap adapter for vscode-js-debug.
-  { 'iamcco/markdown-preview.nvim',      build = 'cd app && yarn install' },             -- Preview markdown on your modern browser with synchronised scrolling and flexible configuration
+  {
+    'iamcco/markdown-preview.nvim',
+    cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
+    ft = { 'markdown' },
+    build = function()
+      require('lazy').load({ plugins = { 'markdown-preview.nvim' } })
+      vim.fn['mkdp#util#install']()
+    end,
+  },                                                                                     -- Preview markdown on your modern browser with synchronised scrolling and flexible configuration
   {
     "microsoft/vscode-js-debug",
     opt = true,
@@ -134,12 +142,21 @@ local plugins = {
   { 'nvim-lua/plenary.nvim' },                                          -- " All the lua functions I don't want to write twice.
   {
     "nvim-treesitter/nvim-treesitter",
-    branch = "master",
+    branch = "main",   -- master is frozen/deprecated; main is the supported branch on nvim 0.11+
+    lazy = false,      -- main does NOT support lazy-loading
     build = ":TSUpdate",
-    opts = opts.treesitter,
-  },                                                      -- The goal of nvim-treesitter is both to provide a simple and easy way to use the interface for tree-sitter in Neovim and to provide some basic functionality
+    config = function()
+      require("nvim-treesitter").install(opts.treesitter_ensure)
+      -- main enables highlighting per-buffer (no module). pcall skips filetypes
+      -- without a parser. Treesitter folding/indent are left off because the
+      -- user config uses indent-based folding and disables auto-indent.
+      vim.api.nvim_create_autocmd("FileType", {
+        callback = function() pcall(vim.treesitter.start) end,
+      })
+    end,
+  },                                                      -- Treesitter interface for Neovim (main branch API)
   { 'rust-lang/rust.vim' },                               -- This is a Vim plugin that provides Rust file detection, syntax highlighting, formatting, Syntastic integration, and more. It requires Vim 8 or higher for full functionality. Some things may not work on earlier versions.
-  { 'mrcjkb/rustaceanvim', version = '^6', lazy = false } -- Modern Rust tooling for Neovim (replaces rust-tools.nvim)
+  { 'mrcjkb/rustaceanvim', branch = 'main', lazy = false } -- Modern Rust tooling for Neovim (tracking main: 6.9.7 release still calls a deprecated nvim API; fix is on main)
 }
 
 return plugins

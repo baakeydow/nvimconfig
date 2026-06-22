@@ -6,7 +6,10 @@ vim.g.markdown_folding = 1
 vim.g.mapleader = ' '
 vim.g.VM_default_mappings = 0
 vim.g.rustfmt_autosave = 1
-vim.g.ruby_host_prog = 'rvm system do neovim-ruby-host'
+-- Ruby/Perl providers disabled: rvm is gone and the neovim ruby/perl host
+-- gems aren't installed. Re-enable if you ever script Nvim in those languages.
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_perl_provider = 0
 vim.g.termdebugger = "rust-gdb"
 vim.g.NERDTreeShowHidden = 1
 vim.g.NERDTreeQuitOnOpen = 0
@@ -38,6 +41,7 @@ end
 
 --vim.g.neovide_fullscreen = true
 vim.g.neovide_remember_window_size = true
+vim.g.neovide_scale_factor = 1.0
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -83,12 +87,9 @@ require("auto-session").setup {
   log_level = vim.log.levels.ERROR,
   auto_session_suppress_dirs = { "~/Projects", "~/Downloads", "/"},
 }
-require('nvim-treesitter.configs').setup({
-  ensure_installed = { "markdown", "markdown_inline", "bash", "rust", "javascript", "typescript", "go", "python", "yaml", "json", "dockerfile" },
-  highlight = {
-    enable = true,
-  },
-})
+-- nvim-treesitter (main branch) is configured in lua/plugins.lua: parser install
+-- via require("nvim-treesitter").install() and highlighting via a FileType autocmd.
+-- The old `nvim-treesitter.configs` module no longer exists on the main branch.
 require("mason-nvim-dap").setup()
 require("fidget").setup()
 require("hlargs").setup()
@@ -180,6 +181,10 @@ require("fzf-lua").setup({
   }
 })
 require('render-markdown').setup({
+  latex = {
+    enabled = true,
+    converter = 'utftex', -- brew-installed; renders $..$ / $$..$$ math in monospace
+  },
   heading = {
     backgrounds = {
       'RenderMarkdownH1Bg',
@@ -261,10 +266,8 @@ autocmd FileChangedShellPost *
 \ echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
 ]])
 
--- Force highlight on buffer enter
-vim.cmd([[
-autocmd BufEnter * TSBufEnable highlight
-]])
+-- (Highlighting is enabled by the FileType autocmd in lua/plugins.lua on the
+--  treesitter main branch; the old :TSBufEnable command no longer exists.)
 
 -- Format on save
 --vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]]
@@ -485,7 +488,7 @@ elseif a:zoom
   vim.opt.smartindent = false
   vim.opt.cindent = false
   vim.opt.indentexpr = ''
-  vim.opt.guifont = 'Hack Nerd Font:h10'
+  vim.opt.guifont = 'Hack Nerd Font:h14'
   vim.opt.cursorline = true
   vim.opt.cursorcolumn = true
   vim.opt.foldmethod = "indent"
