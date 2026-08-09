@@ -75,6 +75,48 @@ vim.lsp.enable('bashls')
 vim.lsp.config('lua_ls', { capabilities = capabilities })         -- Lua
 vim.lsp.enable('lua_ls')
 
+-- Markdown PKM (markdown-oxide, https://oxide.md)
+-- Obsidian-compatible LSP: wikilink completions/renames, backlinks via references,
+-- tags via workspace symbols, daily notes via the :Daily command below.
+vim.lsp.config('markdown_oxide', {
+  -- Vault markers outrank .git: the 21times2 vault sits inside the
+  -- obsidian-bckp git repo, and the default flat list would root there
+  root_markers = { { '.obsidian', '.moxide.toml' }, '.git' },
+  -- dynamicRegistration is required for the Create Unresolved File code action
+  -- and for completions to pick up files created outside the editor
+  capabilities = vim.tbl_deep_extend('force', capabilities, {
+    workspace = {
+      didChangeWatchedFiles = { dynamicRegistration = true }
+    }
+  }),
+  on_attach = function(client, bufnr)
+    -- :Daily accepts natural language ("next monday", "two days ago")
+    -- and relative directives ("prev", "next", "+7", "-3"); no args = today
+    vim.api.nvim_create_user_command('Daily', function(args)
+      client:exec_cmd(
+        -- bare :Daily = today; the server rejects an empty argument
+        { title = 'Open daily note', command = 'jump', arguments = { args.args ~= '' and args.args or 'today' } },
+        { bufnr = bufnr }
+      )
+    end, { desc = 'Open daily note', nargs = '*' })
+    -- Code lens shows reference counts on headings and files
+    vim.lsp.codelens.enable(true, { bufnr = bufnr })
+  end
+})
+vim.lsp.enable('markdown_oxide')
+
+-- obsidian.nvim's built-in obsidian-ls also completes [[ links and has no
+-- config switch to turn that off; markdown-oxide owns completions, so drop
+-- the capability on attach (same trick as the ruff/pyright split above)
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    if client and client.name == 'obsidian-ls' then
+      client.server_capabilities.completionProvider = nil
+    end
+  end
+})
+
 -- Blockchain
 vim.lsp.config('solang', { capabilities = capabilities })         -- Solidity
 vim.lsp.enable('solang')
@@ -525,7 +567,15 @@ cmp.setup({
         })
     },
     sources = {
-        {name = 'nvim_lsp'},
+        {
+            name = 'nvim_lsp',
+            option = {
+                -- Let markdown-oxide complete multi-word wikilinks ([[my note#heading]])
+                markdown_oxide = {
+                    keyword_pattern = [[\(\k\| \|\/\|#\)\+]]
+                }
+            }
+        },
         {name = 'vsnip'},
         {name = 'path'},
         {name = 'buffer'},

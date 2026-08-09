@@ -32,7 +32,8 @@ M.treesitter_ensure = {
       "clangd",
       "graphql",
       "pyright",
-      "ruff"
+      "ruff",
+      "markdown_oxide"
     }
   }
 
